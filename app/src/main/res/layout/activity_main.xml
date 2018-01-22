@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/main_containor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/colorLineGray"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorLightGray">
+        <RadioGroup
+            android:id="@+id/bottom_main_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorWight">
+            <RadioButton
+                android:id="@+id/bottom_main_inset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="7dp"
+                android:button="@null"
+                android:gravity="center"
+                android:text="投幣"
+                android:textSize="10sp"
+                android:textColor="@color/base_color"
+                android:checked="true"
+                android:drawableTop="@drawable/selectot_main_inset"/>
+
+            <View
+                android:layout_width="0.1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorLineGray"/>
+
+            <RadioButton
+                android:id="@+id/bottom_main_mine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/selector_main_mine"
+                android:gravity="center"
+                android:text="我的"
+                android:textColor="@color/colorDrakGray"
+                android:textSize="10sp" />
+        </RadioGroup>
+    </LinearLayout>
+</LinearLayout>
