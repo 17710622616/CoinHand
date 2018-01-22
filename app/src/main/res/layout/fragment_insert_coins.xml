@@ -3,19 +3,52 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/imgView"
-        android:layout_width="20dp"
-        android:layout_height="18dp"
-        android:src="@mipmap/ic_launcher"/>
-
-    <TextView
-        android:id="@+id/textView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:lines="1"
-        android:text="首页"
-        android:textColor="@color/base_color"
-        android:textSize="12sp" />
+        android:layout_height="match_parent">
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map_view"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.cocacola.john_li.googlemaptest.BSSMFragment.MainFragment" />
+
+        <LinearLayout
+            android:id="@+id/insert_load_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/colorLightGray">
+            <ImageView
+                android:id="@+id/insert_load_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/insert_load_fail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/loaction_fail"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/insert_load_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="加載中......"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/inset_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center"
+            android:text="当前地址：定位中..."
+            android:background="@color/colorWayOringe"/>
+    </FrameLayout>
 </LinearLayout>
