@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -31,9 +32,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -49,6 +54,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private LinearLayout loadLL;
     private ImageView loadIv;
     private ImageView loadFailIv;
+    private ImageView refreshIv;
     private TextView loadTv, addressTv;
 
     private AnimationDrawable animationDrawable = null;
@@ -62,6 +68,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private LocationManager mLocationManager;
     private Location mLastLocation = null;
     private String mAddress;
+    private List<OrderListOutModel> orderList;
 
     private static final int REQUESTCODE = 6001;
 
@@ -77,10 +84,11 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     private void initView() {
-        loadLL = (LinearLayout) findViewById(R.id.parking_load_ll);
-        loadIv = (ImageView) findViewById(R.id.parking_load_iv);
-        loadFailIv = (ImageView) findViewById(R.id.parking_load_fail);
-        loadTv = (TextView) findViewById(R.id.parking_load_tv);
+        loadLL = (LinearLayout) findViewById(R.id.insert_load_ll);
+        loadIv = (ImageView) findViewById(R.id.insert_load_iv);
+        loadFailIv = (ImageView) findViewById(R.id.insert_load_fail);
+        loadTv = (TextView) findViewById(R.id.insert_load_tv);
+        refreshIv = (ImageView) findViewById(R.id.insert_refresh);
         addressTv = (TextView) findViewById(R.id.inset_address);
         mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_view);
         mMapFragment.getMapAsync(this);
@@ -94,12 +102,13 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             // position on right bottom
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-            layoutParams.setMargins(0, 90, 30, 0);
+            layoutParams.setMargins(0, 120, 30, 0);
         }
     }
 
     private void setListener() {
-
+        loadLL.setOnClickListener(this);
+        refreshIv.setOnClickListener(this);
     }
 
     private void initData() {
@@ -111,7 +120,21 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.insert_load_ll:
+                animationDrawable.start();
+                loadIv.setVisibility(View.VISIBLE);
+                loadFailIv.setVisibility(View.GONE);
+                loadTv.setText("加載中......");
+                if (mGoogleMap != null) {
+                    mGoogleMap.clear();
+                }
+                onMapReady(mGoogleMap);
+                break;
+            case R.id.insert_refresh:
+                refreshOrderList();
+                break;
+        }
     }
 
     @Override
@@ -138,7 +161,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     }
                     onMapReady(mGoogleMap);
                 } else {
-                    Toast.makeText(getActivity(), "親，要打開GPS或網絡才可以定位的哦~", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -172,16 +195,16 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (isGPSEnabled || isNetworkEnabled) {
             if (!isGPSEnabled) {
-                Toast.makeText(getActivity(), "親，要打開GPS定位更準哦~", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "定位之前請打開GPS！", Toast.LENGTH_SHORT).show();
                 loadMapFail();
             }
 
             if (!isNetworkEnabled) {
-                Toast.makeText(getActivity(), "親，要打開網絡定位更準哦~", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "定位之前請打開網絡！", Toast.LENGTH_SHORT).show();
                 loadMapFail();
             }
         } else {
-            Toast.makeText(getActivity(), "親，要打開GPS和網絡才可以定位的哦~", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
             loadMapFail();
         }
 
@@ -313,6 +336,236 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         } catch (Exception e) {
             e.printStackTrace();
             return "未知";
+        }
+    }
+
+    /**
+     * 刷新訂單
+     */
+    private void refreshOrderList() {
+        if (mGoogleMap != null) {
+            // 模擬加數據
+            loadOrderList();
+            /*mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198372,113.549666)).title("澳门特别行政区澳门半岛連勝馬路").icon(BitmapDescriptorFactory.fromResource(R.mipmap.location_g)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199962,113.544517)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.201054,113.545858)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.200166,113.544715)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.200130,113.544753)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198322,113.543218)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199326,113.545128)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199147,113.545053)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199524,113.545707)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.201223,113.543701)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199366,113.542510)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.200548,113.547113)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199664,113.546866)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199256,113.546920)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198630,113.546909)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.201342,113.546212)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.201591,113.544720)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198660,113.543401)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198114,113.545375)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198432,113.546008)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.199485,113.542800)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197597,113.543283)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198044,113.542693)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198273,113.543272)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198332,113.542178)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197121,113.542746)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.196574,113.542886)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198183,113.542306)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197935,113.543669)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197021,113.543572)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197468,113.542897)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.196415,113.542639)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.196157,113.543015)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197915,113.542553)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.196256,113.542156)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197260,113.542264)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197915,113.542618)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.196107,113.542317)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198789,113.542371)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197945,113.542575)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197587,113.543261)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197011,113.542532)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197299,113.542017)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197160,113.542961)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198134,113.543626)).title("澳门特别行政区澳门半岛麻子街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.197796,113.546448)).title("澳门特别行政区澳门半岛土地廟前地").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198938,113.544903)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(22.198859,113.544388)).title("澳门特别行政区澳门半岛沙梨頭海邊街").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));*/
+            for (int i = 0; i < orderList.size(); i++) {
+                MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getLatitude(),orderList.get(i).getLongitude()));
+                options.title(orderList.get(i).getAddress());
+                switch (orderList.get(i).getColor()) {
+                    case 0:
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                        break;
+                    case 1:
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        break;
+                    case 2:
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        break;
+                }
+                Marker marker = mGoogleMap.addMarker(options);
+                marker.setTag(i);
+            }
+            LatLng sydney = new LatLng(22.200175,113.544710);
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 16));
+        } else {
+            Toast.makeText(getActivity(), "定位信息有誤，請重新定位！", Toast.LENGTH_SHORT);
+        }
+    }
+
+    /**
+     * 模擬假數據請求訂單
+     */
+    private void loadOrderList() {
+        orderList = new ArrayList<>();
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.199 + i * 0.000001);
+            model.setLongitude(113.540 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛沙梨頭海邊街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.198 + i * 0.000001);
+            model.setLongitude(113.542 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛麻子街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.197 + i * 0.000001);
+            model.setLongitude(113.541 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛土地廟前地");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.196 + i * 0.000001);
+            model.setLongitude(113.542 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛僑樂新街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.201 + i * 0.000001);
+            model.setLongitude(113.541 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛連勝馬路");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.195 + i * 0.000001);
+            model.setLongitude(113.540 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛沙梨頭海邊街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.194 + i * 0.000001);
+            model.setLongitude(113.542 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛麻子街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.193 + i * 0.000001);
+            model.setLongitude(113.541 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛土地廟前地");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.192 + i * 0.000001);
+            model.setLongitude(113.542 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛僑樂新街");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
+        }
+
+        for (int i = 1; i < 5000; i += 500) {
+            OrderListOutModel model = new OrderListOutModel();
+            model.setLatitude(22.200001 + i * 0.000001);
+            model.setLongitude(113.541 + i * 0.000001);
+            model.setAddress("澳门特别行政区澳门半岛連勝馬路");
+            if (i % 3 == 0){
+                model.setColor(0);
+            } else if(i % 7 ==0) {
+                model.setColor(1);
+            } else {
+                model.setColor(2);
+            }
+            orderList.add(model);
         }
     }
 }
