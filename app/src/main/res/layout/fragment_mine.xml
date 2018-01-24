@@ -3,19 +3,113 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/imgView"
-        android:layout_width="20dp"
-        android:layout_height="18dp"
-        android:src="@mipmap/ic_launcher"/>
-
-    <TextView
-        android:id="@+id/textView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:lines="1"
-        android:text="我的"
-        android:textColor="@color/base_color"
-        android:textSize="12sp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimaryDark"
+        android:padding="10dp">
+        <ImageView
+            android:id="@+id/insert_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/refresh"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/insert_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="用户"
+            android:textColor="@color/colorWight"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/insert_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/refresh"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <ImageView
+            android:id="@+id/mine_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:src="@mipmap/head"/>
+
+        <TextView
+            android:id="@+id/mine_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="員工編碼：00001"
+            android:textSize="16sp"
+            android:textColor="@color/colorWight"
+            android:layout_toRightOf="@id/mine_head"
+            android:paddingTop="15dp"/>
+
+        <TextView
+            android:id="@+id/mine_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="名稱：員工"
+            android:textSize="16sp"
+            android:textColor="@color/colorWight"
+            android:layout_toRightOf="@id/mine_head"
+            android:layout_below="@id/mine_num"
+            android:paddingTop="5dp"/>
+
+        <TextView
+            android:id="@+id/mine_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="區域：大堂區"
+            android:textSize="16sp"
+            android:textColor="@color/colorWight"
+            android:layout_toRightOf="@id/mine_head"
+            android:layout_below="@id/mine_name"
+            android:paddingTop="5dp"/>
+
+        <TextView
+            android:id="@+id/mine_login_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="登出"
+            android:textSize="18sp"
+            android:textColor="@color/colorWight"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/shape_bottom"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorDrakGray"/>
+    <TextView
+        android:id="@+id/mine_did_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="已完成訂單"
+        android:textSize="18sp"
+        android:padding="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/colorDrakGray"/>
 </LinearLayout>

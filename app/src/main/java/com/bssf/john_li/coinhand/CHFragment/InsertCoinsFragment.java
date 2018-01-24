@@ -411,8 +411,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 Marker marker = mGoogleMap.addMarker(options);
                 marker.setTag(i);
             }
-            LatLng sydney = new LatLng(22.200175,113.544710);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 16));
+            latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.5F));
         } else {
             Toast.makeText(getActivity(), "定位信息有誤，請重新定位！", Toast.LENGTH_SHORT);
         }
@@ -425,8 +425,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         orderList = new ArrayList<>();
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.199 + i * 0.000001);
-            model.setLongitude(113.540 + i * 0.000001);
+            model.setLatitude(mLastLocation.getLatitude() + i * 0.000001);
+            model.setLongitude(mLastLocation.getLongitude() + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛沙梨頭海邊街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -439,8 +439,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.198 + i * 0.000001);
-            model.setLongitude(113.542 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() - 0.001) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() - 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛麻子街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -453,8 +453,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.197 + i * 0.000001);
-            model.setLongitude(113.541 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() - 0.002) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() + 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛土地廟前地");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -468,8 +468,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.196 + i * 0.000001);
-            model.setLongitude(113.542 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() - 0.003) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() - 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛僑樂新街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -483,8 +483,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.201 + i * 0.000001);
-            model.setLongitude(113.541 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() - 0.004) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() + 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛連勝馬路");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -497,8 +497,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.195 + i * 0.000001);
-            model.setLongitude(113.540 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() + 0.001) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() - 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛沙梨頭海邊街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -511,8 +511,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.194 + i * 0.000001);
-            model.setLongitude(113.542 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() + 0.002) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() + 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛麻子街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -525,8 +525,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.193 + i * 0.000001);
-            model.setLongitude(113.541 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() + 0.003) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() - 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛土地廟前地");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -540,8 +540,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.192 + i * 0.000001);
-            model.setLongitude(113.542 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() + 0.004) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() + 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛僑樂新街");
             if (i % 3 == 0){
                 model.setColor(0);
@@ -555,8 +555,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
-            model.setLatitude(22.200001 + i * 0.000001);
-            model.setLongitude(113.541 + i * 0.000001);
+            model.setLatitude((mLastLocation.getLatitude() + 0.005) + i * 0.000001);
+            model.setLongitude((mLastLocation.getLongitude() - 0.002) + i * 0.000001);
             model.setAddress("澳门特别行政区澳门半岛連勝馬路");
             if (i % 3 == 0){
                 model.setColor(0);
