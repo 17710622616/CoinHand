@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bssf.john_li.coinhand.CHUtils.SPUtils;
+import com.bssf.john_li.coinhand.LoginActivity;
 import com.bssf.john_li.coinhand.OrderListActivity;
 import com.bssf.john_li.coinhand.R;
 
@@ -50,7 +52,9 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
                         .setPositiveButton("確認", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                SPUtils.put(getActivity(), "qsUserToken", "");
                                 dialog.dismiss();
+                                System.exit(0);
                             }})
                         .setNegativeButton("取消", null)
                         .create().show();
