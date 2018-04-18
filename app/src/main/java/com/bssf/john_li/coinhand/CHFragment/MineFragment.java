@@ -11,6 +11,7 @@ import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.LoginActivity;
 import com.bssf.john_li.coinhand.OrderListActivity;
 import com.bssf.john_li.coinhand.R;
+import com.bssf.john_li.coinhand.WorkAreaActivity;
 
 /**
  * Created by John_Li on 20/1/2018.
@@ -18,7 +19,7 @@ import com.bssf.john_li.coinhand.R;
 
 public class MineFragment extends LazyLoadFragment implements View.OnClickListener{
     public static String TAG = MineFragment.class.getName();
-    private TextView loginOutTv, didOrderTv;
+    private TextView loginOutTv, didOrderTv, workAreaTv;
 
     public static MineFragment newInstance(){
         return new MineFragment();
@@ -35,11 +36,13 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
     private void initView() {
         loginOutTv = (TextView) findViewById(R.id.mine_login_out);
         didOrderTv = (TextView) findViewById(R.id.mine_did_order);
+        workAreaTv = (TextView) findViewById(R.id.mine_work_area);
     }
 
     private void setlistener() {
         loginOutTv.setOnClickListener(this);
         didOrderTv.setOnClickListener(this);
+        workAreaTv.setOnClickListener(this);
     }
 
     @Override
@@ -61,6 +64,9 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
                 break;
             case R.id.mine_did_order:
                 startActivity(new Intent(getActivity(), OrderListActivity.class));
+                break;
+            case R.id.mine_work_area:
+                startActivity(new Intent(getActivity(), WorkAreaActivity.class));
                 break;
         }
     }
