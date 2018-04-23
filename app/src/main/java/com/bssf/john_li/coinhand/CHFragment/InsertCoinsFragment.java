@@ -1,5 +1,6 @@
 package com.bssf.john_li.coinhand.CHFragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
@@ -13,14 +14,23 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
+import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
+import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
+import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,6 +47,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xutils.common.Callback;
+import org.xutils.http.HttpMethod;
+import org.xutils.http.RequestParams;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,6 +181,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 } else {
                     Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
                 }
+                return false;
+            }
+        });
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                showOrderListPop((int)marker.getTag());
                 return false;
             }
         });
@@ -423,6 +449,53 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      */
     private void loadOrderList() {
         orderList = new ArrayList<>();
+        /*final ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setTitle("系統");
+        dialog.setMessage("正在獲取最新訂單列表中......");
+        dialog.setCancelable(false);
+        dialog.show();
+        RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.GET_ORDER_LIST);
+        params.setAsJsonContent(true);
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("qstoken", SPUtils.get(getActivity(), "qsUserToken", ""));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String urlJson = jsonObj.toString();
+        params.setBodyContent(urlJson);
+        String uri = params.getUri();
+        params.setConnectTimeout(30 * 1000);
+        x.http().request(HttpMethod.POST ,params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                GetWorkAreaOutModel model = new Gson().fromJson(result.toString(), GetWorkAreaOutModel.class);
+                if (model.getCode() == 200) {
+                    //areaList = model.getData();
+                    Toast.makeText(getActivity(), "獲取最新訂單列表成功！", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //请求异常后的回调方法
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if (ex instanceof java.net.SocketTimeoutException) {
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //主动调用取消请求的回调方法
+            @Override
+            public void onCancelled(CancelledException cex) {
+            }
+            @Override
+            public void onFinished() {
+                dialog.dismiss();
+            }
+        });
+*/
         for (int i = 1; i < 5000; i += 500) {
             OrderListOutModel model = new OrderListOutModel();
             model.setLatitude(mLastLocation.getLatitude() + i * 0.000001);
@@ -567,5 +640,44 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             }
             orderList.add(model);
         }
+    }
+
+    /**
+     * 打開訂單的視窗
+     * @param id
+     */
+    private void showOrderListPop(int id) {
+        //设置contentView
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_order_list, null);
+        final PopupWindow mPopWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, 1000, true);
+        mPopWindow.setContentView(contentView);
+        //设置各个控件的点击响应
+        TextView machineTv = contentView.findViewById(R.id.pop_macheine_address);
+        ImageView cancleIv = contentView.findViewById(R.id.pop_cancle);
+        ListView popOrderList = contentView.findViewById(R.id.pop_order_list_lv);
+        machineTv.setText("編        號：69556" + "\n咪錶位置：" + orderList.get(id).getAddress());
+        cancleIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopWindow.dismiss();
+            }
+        });
+        PopOrderListAdapter adapter = new PopOrderListAdapter(getOrderList(id), getActivity());
+        popOrderList.setAdapter(adapter);
+        //显示PopupWindow
+        View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.activity_main, null);
+        mPopWindow.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);
+    }
+
+    /**
+     * 查詢視窗內的訂單
+     * @param id
+     */
+    private List<String> getOrderList(int id) {
+        List<String> list = new ArrayList<>();
+        list.add(orderList.get(id).getAddress() + "1");
+        list.add(orderList.get(id).getAddress() + "2");
+        list.add(orderList.get(id).getAddress() + "3");
+        return list;
     }
 }

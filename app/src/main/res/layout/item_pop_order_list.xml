@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+    
+    <ImageView
+        android:id="@+id/item_pop_iv"
+        android:layout_width="110dp"
+        android:layout_height="87dp"
+        android:src="@mipmap/car_sample"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp">
+        <TextView
+            android:id="@+id/item_pop_order_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="訂單編號：00001"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_car_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="車牌號碼：M6956"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_car_port"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="車位編號：09"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_order_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="車        主：MISS.LI"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_tel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="電話號碼：65863293"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_order_next_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="下次時間：00:00:12"
+            android:textSize="15sp"
+            android:textColor="#000"/>
+    </LinearLayout>
+</LinearLayout>

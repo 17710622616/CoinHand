@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     SPUtils.put(MainActivity.this, "qsWorkArea", new Gson().toJson(areaData));
                     Toast.makeText(MainActivity.this, "獲取投幣手工作區域成功！", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "獲取投幣手工作區域失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "獲取投幣手工作區域失敗！請重新提交" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
