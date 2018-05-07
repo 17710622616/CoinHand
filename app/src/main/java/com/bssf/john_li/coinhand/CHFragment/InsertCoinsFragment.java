@@ -680,4 +680,49 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         list.add(orderList.get(id).getAddress() + "3");
         return list;
     }
+    
+    private void callNetGetOperationOrderList() {
+        RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.GET_ORDER_LIST);
+        params.setAsJsonContent(true);
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("qstoken",SPUtils.get(getActivity(), "qsUserToken", ""));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String urlJson = jsonObj.toString();
+        params.setBodyContent(urlJson);
+        String uri = params.getUri();
+        params.setConnectTimeout(30 * 1000);
+        x.http().request(HttpMethod.POST ,params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                GetWorkAreaOutModel model = new Gson().fromJson(result.toString(), GetWorkAreaOutModel.class);
+                if (model.getCode() == 200) {
+                    List areaData = model.getData();
+                    SPUtils.put(getActivity(), "qsWorkArea", new Gson().toJson(areaData));
+                    Toast.makeText(getActivity(), "獲取可操作訂單成功！", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取可操作訂單失敗！請重試" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
+                }
+            }
+            //请求异常后的回调方法
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if (ex instanceof java.net.SocketTimeoutException) {
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取可操作訂單失敗！請重試", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //主动调用取消请求的回调方法
+            @Override
+            public void onCancelled(CancelledException cex) {
+            }
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
 }
