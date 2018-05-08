@@ -2,6 +2,7 @@ package com.bssf.john_li.coinhand;
 
 import android.app.Application;
 
+import org.greenrobot.eventbus.EventBus;
 import org.xutils.x;
 
 /**

@@ -43,20 +43,6 @@
             android:textSize="15sp"
             android:textColor="#000"/>
         <TextView
-            android:id="@+id/item_pop_order_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="車        主：MISS.LI"
-            android:textSize="15sp"
-            android:textColor="#000"/>
-        <TextView
-            android:id="@+id/item_pop_tel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="電話號碼：65863293"
-            android:textSize="15sp"
-            android:textColor="#000"/>
-        <TextView
             android:id="@+id/item_pop_order_next_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

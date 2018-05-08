@@ -13,4 +13,10 @@ public class CHConfigtor {
     public final static String WORK_AREA = "toushou/getAreaList";
     // 獲取該區域內的訂單
     public final static String GET_ORDER_LIST = "toushou/getOrderList";
+    // 獲取訂單詳情
+    public final static String GET_ORDER_DETAIL = "toushou/getToushouOrderDetail";
+    // 投手單次接單
+    public final static String TOUSHOU_RECIEVER_ORDER_ONCE = "toushou/acceptOrder";
+    // 完成單次訂單投幣
+    public final static String FINISH_INSERT_COINS_ORDER_ONCE = "toushou/finsh";
 }
