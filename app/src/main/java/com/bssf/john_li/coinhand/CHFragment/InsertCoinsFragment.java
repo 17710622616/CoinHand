@@ -92,6 +92,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private Location mLastLocation = null;
     private String mAddress;
     private List<OrderListOutModel.OrderModel> orderList;
+    // 未知機器的訂單
+    private List<OrderListOutModel.OrderModel> orderMachineUnknowList;
     private int totalCount = 0;
 
     private static final int REQUESTCODE = 6001;
@@ -393,10 +395,11 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     /**
-     * 模擬假數據請求訂單
+     * 請求訂單列表
      */
     private void loadOrderList() {
         orderList = new ArrayList<>();
+        orderMachineUnknowList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setTitle("系統");
         dialog.setMessage("正在獲取最新訂單列表中......");
@@ -457,29 +460,33 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         mGoogleMap.clear();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
-            MarkerOptions options = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
-            options.title("地址XXX0");
+            if (orderList.get(i).getMachineNo() != null) {
+                MarkerOptions options = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
+                options.title("地址XXX0");
             /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-            Marker marker = mGoogleMap.addMarker(options);
-            marker.setTag(orderList.get(i).getMachineNo());
+                Marker marker = mGoogleMap.addMarker(options);
+                marker.setTag(orderList.get(i).getMachineNo());
 
-            MarkerOptions options1 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() - 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
-            options.title("地址XXX1");
+                MarkerOptions options1 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() - 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
+                options.title("地址XXX1");
             /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-            Marker marker1 = mGoogleMap.addMarker(options1);
-            marker1.setTag(orderList.get(i).getMachineNo());
+                Marker marker1 = mGoogleMap.addMarker(options1);
+                marker1.setTag(orderList.get(i).getMachineNo());
 
-            MarkerOptions options2 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() - 0.0002) + i * 0.000001));
-            options.title("地址XXX2");
+                MarkerOptions options2 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() - 0.0002) + i * 0.000001));
+                options.title("地址XXX2");
             /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-            Marker marker2 = mGoogleMap.addMarker(options2);
-            marker2.setTag(orderList.get(i).getMachineNo());
+                Marker marker2 = mGoogleMap.addMarker(options2);
+                marker2.setTag(orderList.get(i).getMachineNo());
+            } else {
+                orderMachineUnknowList.add(orderList.get(i));
+            }
         }
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F));
