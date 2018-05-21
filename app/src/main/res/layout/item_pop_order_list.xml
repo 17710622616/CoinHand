@@ -49,5 +49,12 @@
             android:text="下次時間：00:00:12"
             android:textSize="15sp"
             android:textColor="#000"/>
+        <TextView
+            android:id="@+id/item_pop_order_remark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="备注"
+            android:textSize="15sp"
+            android:textColor="#000"/>
     </LinearLayout>
 </LinearLayout>

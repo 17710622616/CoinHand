@@ -11,10 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.OrderOperationRecordAdapter;
+import com.bssf.john_li.coinhand.CHAdapter.PhotoAdapter;
 import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
+import com.bssf.john_li.coinhand.CHView.NoScrollGridView;
 import com.bssf.john_li.coinhand.CHView.NoScrollListView;
 import com.google.gson.Gson;
 
@@ -36,6 +38,7 @@ import java.util.List;
 public class OrderDetialActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout loadingLL;
     private NoScrollListView oparetionRecordLv;
+    private NoScrollGridView order_img_gv;
     private ImageView carIv, backIv, submitIv, loadingIv;
     private TextView orderNoTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
 
@@ -46,6 +49,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private int currentToubiAmount;
     private List<OrderDetialOutModel.DataBean.ToushouRecordListBean> mToushouRecordList;
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
+    private List<String> mPhotoList;
+    private PhotoAdapter mPhotoAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +79,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         loadingTv = findViewById(R.id.order_detial_load_tv);
         loadingLL = findViewById(R.id.order_detial_loading);
         oparetionRecordLv = findViewById(R.id.order_detial_lv);
+        order_img_gv = findViewById(R.id.order_img_gv);
     }
 
     @Override
@@ -91,6 +97,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         mToushouRecordList = new ArrayList<>();
         mOrderOperationRecordAdapter = new OrderOperationRecordAdapter(mToushouRecordList, this);
         oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
+        mPhotoList = new ArrayList<>();
+        mPhotoAdapter = new PhotoAdapter(this, mPhotoList);
+        order_img_gv.setAdapter(mPhotoAdapter);
         callNetGetOredrDetial();
     }
 
@@ -172,7 +181,23 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 carTypeTv.setText("車輛類型：重型汽車");
                 break;
         }
+        if (mOrderDetialModel.getImg1() != null) {
+            mPhotoList.add(mOrderDetialModel.getImg1());
+        }
+        if (mOrderDetialModel.getImg2() != null) {
+            mPhotoList.add(mOrderDetialModel.getImg2());
+        }
+        if (mOrderDetialModel.getImg3() != null) {
+            mPhotoList.add(mOrderDetialModel.getImg3());
+        }
+        if (mOrderDetialModel.getImg4() != null) {
+            mPhotoList.add(mOrderDetialModel.getImg4());
+        }
+        if (mOrderDetialModel.getImg5() != null) {
+            mPhotoList.add(mOrderDetialModel.getImg5());
+        }
 
+        mPhotoAdapter.notifyDataSetChanged();
         mOrderOperationRecordAdapter.notifyDataSetChanged();
     }
 

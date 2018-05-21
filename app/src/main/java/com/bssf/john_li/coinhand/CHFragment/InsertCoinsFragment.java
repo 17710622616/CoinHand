@@ -76,6 +76,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private View view;
     private LinearLayout loadLL;
     private ImageView loadIv;
+    private ImageView unknowMachaineIv;
     private ImageView loadFailIv;
     private ImageView refreshIv;
     private TextView loadTv, addressTv;
@@ -113,6 +114,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private void initView() {
         loadLL = (LinearLayout) findViewById(R.id.insert_load_ll);
         loadIv = (ImageView) findViewById(R.id.insert_load_iv);
+        unknowMachaineIv = (ImageView) findViewById(R.id.insert_unknown_machanie);
         loadFailIv = (ImageView) findViewById(R.id.insert_load_fail);
         loadTv = (TextView) findViewById(R.id.insert_load_tv);
         refreshIv = (ImageView) findViewById(R.id.insert_refresh);
@@ -136,6 +138,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private void setListener() {
         loadLL.setOnClickListener(this);
         refreshIv.setOnClickListener(this);
+        unknowMachaineIv.setOnClickListener(this);
     }
 
     private void initData() {
@@ -166,6 +169,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 break;
             case R.id.insert_refresh:
                 refreshOrderList();
+                break;
+            case R.id.insert_unknown_machanie:
+                showUnkonwOrderListPop();
                 break;
         }
     }
@@ -423,9 +429,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 OrderListOutModel model = new Gson().fromJson(result.toString(), OrderListOutModel.class);
                 if (model.getCode() == 200) {
                     orderList = model.getData();
-                    for (OrderListOutModel.OrderModel model1 : orderList) {
-                        model1.setMachineNo("60681");
-                    }
                     refreshNewMarkerList();
                     Toast.makeText(getActivity(), "獲取最新訂單列表成功！", Toast.LENGTH_SHORT).show();
                 } else {
@@ -468,22 +471,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
                 Marker marker = mGoogleMap.addMarker(options);
                 marker.setTag(orderList.get(i).getMachineNo());
-
-                MarkerOptions options1 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() - 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
-                options.title("地址XXX1");
-            /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-                Marker marker1 = mGoogleMap.addMarker(options1);
-                marker1.setTag(orderList.get(i).getMachineNo());
-
-                MarkerOptions options2 = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() - 0.0002) + i * 0.000001));
-                options.title("地址XXX2");
-            /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-                Marker marker2 = mGoogleMap.addMarker(options2);
-                marker2.setTag(orderList.get(i).getMachineNo());
             } else {
                 orderMachineUnknowList.add(orderList.get(i));
             }
@@ -520,6 +507,41 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrderNo());
+                startActivity(intent);
+                mPopWindow.dismiss();
+            }
+        });
+        //显示PopupWindow
+        View rootview = LayoutInflater.from(getActivity()).inflate(R.layout.activity_main, null);
+        mPopWindow.showAtLocation(rootview, Gravity.BOTTOM, 0, 0);
+    }
+
+    /**
+     * 點擊導航欄上的未知咪錶訂單按鈕，打開對應未知咪錶的訂單列表的視窗
+     */
+    private void showUnkonwOrderListPop() {
+        //设置contentView
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_order_list, null);
+        final PopupWindow mPopWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, 1000, true);
+        mPopWindow.setContentView(contentView);
+        //设置各个控件的点击响应
+        TextView machineTv = contentView.findViewById(R.id.pop_macheine_address);
+        ImageView cancleIv = contentView.findViewById(R.id.pop_cancle);
+        ListView popOrderList = contentView.findViewById(R.id.pop_order_list_lv);
+        machineTv.setText("編        號：未知");
+        cancleIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopWindow.dismiss();
+            }
+        });
+        PopOrderListAdapter adapter = new PopOrderListAdapter(orderMachineUnknowList, getActivity());
+        popOrderList.setAdapter(adapter);
+        popOrderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
+                intent.putExtra("orderNo", orderMachineUnknowList.get(position).getOrderNo());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }

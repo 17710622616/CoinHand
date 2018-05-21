@@ -89,6 +89,16 @@
                     android:layout_height="0.1dp"
                     android:background="@color/colorLineGray"/>
 
+                <com.bssf.john_li.coinhand.CHView.NoScrollGridView
+                    android:id="@+id/order_img_gv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.1dp"
+                    android:background="@color/colorLineGray"/>
+
                 <TextView
                     android:id="@+id/order_detial_orderno"
                     android:layout_width="match_parent"

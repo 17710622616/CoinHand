@@ -11,12 +11,11 @@
         android:background="@color/colorPrimaryDark"
         android:padding="10dp">
         <ImageView
-            android:id="@+id/insert_back"
+            android:id="@+id/insert_unknown_machanie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/refresh"
-            android:visibility="invisible"/>
+            android:src="@mipmap/refresh"/>
 
         <TextView
             android:id="@+id/insert_title"

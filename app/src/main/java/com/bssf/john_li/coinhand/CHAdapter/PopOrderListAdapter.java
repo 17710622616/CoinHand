@@ -53,6 +53,7 @@ public class PopOrderListAdapter extends BaseAdapter {
             holder.item_pop_car_no = convertView.findViewById(R.id.item_pop_car_no);
             holder.item_pop_car_port = convertView.findViewById(R.id.item_pop_car_port);
             holder.item_pop_order_next_time = convertView.findViewById(R.id.item_pop_order_next_time);
+            holder.item_pop_order_remark = convertView.findViewById(R.id.item_pop_order_remark);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -61,11 +62,12 @@ public class PopOrderListAdapter extends BaseAdapter {
         holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getCarId()));
         holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getParkingSpace()));
         holder.item_pop_order_next_time.setText("下次時間：" + CHCommonUtils.stampToDate(String.valueOf(list.get(position).getStartSlotTime())));
+        holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getRemark()));
         return convertView;
     }
 
     public class ViewHolder {
         public ImageView item_pop_iv;
-        public TextView item_pop_order_no, item_pop_car_no, item_pop_car_port, item_pop_order_next_time;
+        public TextView item_pop_order_no, item_pop_car_no, item_pop_car_port, item_pop_order_next_time, item_pop_order_remark;
     }
 }
