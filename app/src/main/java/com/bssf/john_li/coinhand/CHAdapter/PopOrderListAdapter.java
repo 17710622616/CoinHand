@@ -19,10 +19,10 @@ import java.util.List;
  */
 
 public class PopOrderListAdapter extends BaseAdapter {
-    private List<OrderListOutModel.OrderModel> list;
+    private List<OrderListOutModel.DataBean> list;
     private LayoutInflater mInflater;
     private Context mContext;
-    public PopOrderListAdapter(List<OrderListOutModel.OrderModel> list, Context context) {
+    public PopOrderListAdapter(List<OrderListOutModel.DataBean> list, Context context) {
         this.list = list;
         mInflater = LayoutInflater.from(context);
         mContext = context;
@@ -58,11 +58,11 @@ public class PopOrderListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.item_pop_order_no.setText("訂單編號：" + String.valueOf(list.get(position).getOrderNo()));
-        holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getCarId()));
-        holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getParkingSpace()));
-        holder.item_pop_order_next_time.setText("下次時間：" + CHCommonUtils.stampToDate(String.valueOf(list.get(position).getStartSlotTime())));
-        holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getRemark()));
+        holder.item_pop_order_no.setText("訂單編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
+        holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarId()));
+        holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getOrder().getCarId()));
+        holder.item_pop_order_next_time.setText("下次時間：" + CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));
+        holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getOrder().getRemark()));
         return convertView;
     }
 

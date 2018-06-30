@@ -92,9 +92,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private LocationManager mLocationManager;
     private Location mLastLocation = null;
     private String mAddress;
-    private List<OrderListOutModel.OrderModel> orderList;
+    private List<OrderListOutModel.DataBean> orderList;
     // 未知機器的訂單
-    private List<OrderListOutModel.OrderModel> orderMachineUnknowList;
+    private List<OrderListOutModel.DataBean> orderMachineUnknowList;
     private int totalCount = 0;
 
     private static final int REQUESTCODE = 6001;
@@ -463,14 +463,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         mGoogleMap.clear();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
-            if (orderList.get(i).getMachineNo() != null) {
-                MarkerOptions options = new MarkerOptions().position(new LatLng((mLastLocation.getLatitude() + 0.0004) + i * 0.000001, (mLastLocation.getLongitude() + 0.0002) + i * 0.000001));
-                options.title("地址XXX0");
+            if (orderList.get(i).getOrder().getMachineNo() != null) {
+                MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
+                options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
             /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
                 Marker marker = mGoogleMap.addMarker(options);
-                marker.setTag(orderList.get(i).getMachineNo());
+                marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
             } else {
                 orderMachineUnknowList.add(orderList.get(i));
             }
@@ -499,14 +499,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 mPopWindow.dismiss();
             }
         });
-        final List<OrderListOutModel.OrderModel> orderThatMacheineList = getOrderList(machineNo);
+        final List<OrderListOutModel.DataBean> orderThatMacheineList = getOrderList(machineNo);
         PopOrderListAdapter adapter = new PopOrderListAdapter(orderThatMacheineList, getActivity());
         popOrderList.setAdapter(adapter);
         popOrderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
-                intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrderNo());
+                intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrder().getOrderNo());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -541,7 +541,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
-                intent.putExtra("orderNo", orderMachineUnknowList.get(position).getOrderNo());
+                intent.putExtra("orderNo", orderMachineUnknowList.get(position).getOrder().getOrderNo());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -555,11 +555,13 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * 查詢打開的咪錶訂單列表視窗內的訂單列表
      * @param machineNo
      */
-    private List<OrderListOutModel.OrderModel> getOrderList(String machineNo) {
-        List<OrderListOutModel.OrderModel> list = new ArrayList<>();
-        for (OrderListOutModel.OrderModel model : orderList) {
-            if (model.getMachineNo().equals(machineNo)) {
-                list.add(model);
+    private List<OrderListOutModel.DataBean> getOrderList(String machineNo) {
+        List<OrderListOutModel.DataBean> list = new ArrayList<>();
+        for (OrderListOutModel.DataBean model : orderList) {
+            if (model.getOrder().getMachineNo() != null) {
+                if (model.getSoltMachine().getMachineNo().equals(machineNo)) {
+                    list.add(model);
+                }
             }
         }
         return list;

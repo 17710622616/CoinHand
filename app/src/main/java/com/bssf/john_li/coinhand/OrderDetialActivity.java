@@ -213,7 +213,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.order_detial_submit:  // 提交單次投幣完成
-                if (isReciverOrder) {
+                if (true) { //isReciverOrder
                     callNetSubmitInsertCoinOnce();
                 } else {
                     Toast.makeText(this, "您尚未提交接單操作，請先接單！", Toast.LENGTH_LONG).show();
