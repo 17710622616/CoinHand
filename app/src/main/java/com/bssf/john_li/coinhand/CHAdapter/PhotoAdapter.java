@@ -22,7 +22,7 @@ public class PhotoAdapter extends BaseAdapter {
     private List<String> photoList;
     private LayoutInflater inflater;
     private Context mContext;
-    private ImageOptions options = new ImageOptions.Builder().setSize(0, 0).setFailureDrawableId(R.mipmap.car_sample).build();
+    private ImageOptions options = new ImageOptions.Builder().setSize(0, 0).setFailureDrawableId(R.mipmap.load_img_fail).build();
 
     public PhotoAdapter(Context context, List<String> photoList) {
         this.photoList = photoList;
@@ -57,7 +57,7 @@ public class PhotoAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (i == photoList.size() - 1) {
+        if (photoList.size() < 1) {
             holder.imgPhoto.setImageResource(R.mipmap.car_sample);
         } else {
             String url = photoList.get(i);

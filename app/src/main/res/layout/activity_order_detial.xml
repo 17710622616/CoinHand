@@ -53,7 +53,7 @@
                     android:layout_margin="5dp"
                     android:background="@color/colorWight">
                     <ImageView
-                        android:id="@+id/order_detial_iv"
+                        android:id="@+id/order_detial_car_iv"
                         android:layout_width="110dp"
                         android:layout_height="87dp"
                         android:src="@mipmap/car_sample"
@@ -68,7 +68,7 @@
                         android:text="車牌號碼：M6596"
                         android:textSize="16sp"
                         android:textColor="@color/colorBlack"
-                        android:layout_toRightOf="@id/order_detial_iv"
+                        android:layout_toRightOf="@id/order_detial_car_iv"
                         android:layout_marginLeft="5dp"
                         android:layout_centerVertical="true"/>
 
@@ -79,7 +79,7 @@
                         android:text="車牌類型：私家車"
                         android:textSize="16sp"
                         android:textColor="@color/colorBlack"
-                        android:layout_toRightOf="@id/order_detial_iv"
+                        android:layout_toRightOf="@id/order_detial_car_iv"
                         android:layout_below="@id/order_detial_carno"
                         android:layout_marginLeft="5dp"/>
                 </RelativeLayout>
@@ -118,7 +118,7 @@
                     android:id="@+id/order_detial_start_slottime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="開始投幣時間：12:16:13"
+                    android:text="開始投幣時間：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"
@@ -133,7 +133,7 @@
                     android:id="@+id/order_detial_money_ervery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="每次投幣金額：2MOP"
+                    android:text="每次投幣金額：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"
@@ -148,7 +148,7 @@
                     android:id="@+id/order_detial_next_slottime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="下次投幣時間：2018/05/1612:16:13"
+                    android:text="下次投幣時間：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"
@@ -163,7 +163,7 @@
                     android:id="@+id/order_detial_machine_no"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="咪錶編號：60681"
+                    android:text="咪錶編號：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"
@@ -178,7 +178,7 @@
                     android:id="@+id/order_detial_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="區域編號：QT"
+                    android:text="區域編號：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"

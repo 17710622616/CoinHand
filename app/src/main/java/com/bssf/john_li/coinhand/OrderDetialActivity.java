@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
+import org.xutils.image.ImageOptions;
 import org.xutils.x;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
     private List<String> mPhotoList;
     private PhotoAdapter mPhotoAdapter;
+    private ImageOptions options = new ImageOptions.Builder().setSize(0, 0).setFailureDrawableId(R.mipmap.load_img_fail).build();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +64,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void initView() {
-        carIv = findViewById(R.id.order_detial_iv);
+        carIv = findViewById(R.id.order_detial_car_iv);
         backIv = findViewById(R.id.order_detial_back);
         submitIv = findViewById(R.id.order_detial_submit);
         orderNoTv = findViewById(R.id.order_detial_orderno);
@@ -164,6 +166,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
      * 獲取訂單詳情成功刷新界面
      */
     private void refreshUI() {
+        x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
         moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
