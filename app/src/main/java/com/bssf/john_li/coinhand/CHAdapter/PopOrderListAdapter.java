@@ -12,6 +12,9 @@ import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.R;
 
+import org.xutils.image.ImageOptions;
+import org.xutils.x;
+
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ public class PopOrderListAdapter extends BaseAdapter {
     private List<OrderListOutModel.DataBean> list;
     private LayoutInflater mInflater;
     private Context mContext;
+    private ImageOptions options = new ImageOptions.Builder().setSize(0, 0).setFailureDrawableId(R.mipmap.load_img_fail).build();
     public PopOrderListAdapter(List<OrderListOutModel.DataBean> list, Context context) {
         this.list = list;
         mInflater = LayoutInflater.from(context);
@@ -58,7 +62,8 @@ public class PopOrderListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.item_pop_order_no.setText("訂單編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
+        //x.image().bind(holder.item_pop_iv,  String.valueOf(list.get(position).getOrder().getOrderNo()), options);
+        holder.item_pop_order_no.setText("編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
         holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarId()));
         holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getOrder().getCarId()));
         holder.item_pop_order_next_time.setText("下次時間：" + CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));

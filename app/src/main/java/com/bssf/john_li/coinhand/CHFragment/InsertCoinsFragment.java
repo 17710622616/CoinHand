@@ -492,14 +492,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         TextView machineTv = contentView.findViewById(R.id.pop_macheine_address);
         ImageView cancleIv = contentView.findViewById(R.id.pop_cancle);
         ListView popOrderList = contentView.findViewById(R.id.pop_order_list_lv);
-        machineTv.setText("編        號：" + machineNo + "\n咪錶位置：");
+        final List<OrderListOutModel.DataBean> orderThatMacheineList = getOrderList(machineNo);
+        machineTv.setText("編        號：" + machineNo + "\t\t\t\t区域：" + orderThatMacheineList.get(0).getSoltMachine().getAreaCode() + "\n咪錶位置：" + orderThatMacheineList.get(0).getSoltMachine().getAddress());
         cancleIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPopWindow.dismiss();
             }
         });
-        final List<OrderListOutModel.DataBean> orderThatMacheineList = getOrderList(machineNo);
         PopOrderListAdapter adapter = new PopOrderListAdapter(orderThatMacheineList, getActivity());
         popOrderList.setAdapter(adapter);
         popOrderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
