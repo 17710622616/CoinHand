@@ -41,6 +41,7 @@
         <activity android:name=".LoginActivity"/>
         <activity android:name=".OrderListActivity"/>
         <activity android:name=".WorkAreaActivity"/>
+        <activity android:name=".OrderDetialActivity"/>
     </application>
 
 </manifest>

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHModel.CommonModel;
+import com.bssf.john_li.coinhand.CHModel.UserInfoModel;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
 import com.bssf.john_li.coinhand.CHUtils.DigestUtils;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
@@ -111,9 +112,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         x.http().request(HttpMethod.POST ,params, new Callback.CommonCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                CommonModel model = new Gson().fromJson(result.toString(), CommonModel.class);
-                if (model.getCode().equals("200")) {
-                    SPUtils.put(LoginActivity.this, "qsUserToken", model.getData().toString());
+                UserInfoModel model = new Gson().fromJson(result.toString(), UserInfoModel.class);
+                if (model.getCode() == 200) {
+                    SPUtils.put(LoginActivity.this, "qsUserName", String.valueOf(model.getData().getUsername()));
+                    SPUtils.put(LoginActivity.this, "qsUserToken", String.valueOf(model.getData().getQstoken()));
                     Toast.makeText(LoginActivity.this, "登錄成功！", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();

@@ -3,19 +3,20 @@ package com.bssf.john_li.coinhand.CHModel;
 import java.util.List;
 
 /**
- * Created by John_Li on 24/1/2018.
+ * Created by John_Li on 8/5/2018.
  */
 
-public class OrderListOutModel {
+public class OrderDetialOutModel {
+
     /**
      * code : 200
-     * msg : null
-     * data : [{"order":{"id":152,"userId":16,"orderNo":"S201805211006369040001","orderStatus":3,"orderType":3,"machineNo":"86755","carId":30,"startSlotTime":1526875585000,"totalAmount":61,"discountAmount":0,"payAmount":61,"couponId":"","remark":"666","monthNum":0,"isDelete":0,"createTime":1526868396000,"updateTime":1527318461000,"updateTime0":1527318461000,"carType":2,"createTime0":1526868396000,"startSlotTime0":1526868396000,"pillarColor":"red","areaCode":"HDMT","parkingSpace":"","synTradeNo":"","asynTradeNo":"S201805211006369040001","img1":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/l/homepage/appcenter/zh-tw/579.bmp","img2":"","img3":"","img4":"","img5":"","toushouAmount":0,"toushouUserId":1526875585000},"soltMachine":{"id":729,"machineNo":"86755","carType":2,"pillarColor":"red","longitude":113.5357,"latitude":22.2121,"areaCode":"HDMT","address":"青州河邊馬路","parkingSpaces":"","isDelete":0,"createTime":1526868396000,"updateTime":1526868396000,"updateTime0":1526868396000,"createTime0":1526868396000}}]
+     * msg :
+     * data : {"order":{"id":19,"userId":16,"orderNo":"U201710221223000520001","orderStatus":3,"orderType":4,"machineNo":"","carId":12,"startSlotTime":1506747553000,"totalAmount":40,"discountAmount":0,"payAmount":40,"couponId":null,"remark":"xxxxxxxxxxxxxxx","monthNum":0,"isDelete":0,"createTime":1508646181000,"updateTime":1524582993000,"updateTime0":null,"carType":1,"createTime0":null,"startSlotTime0":null,"pillarColor":"yellow","areaCode":"QT","parkingSpace":"","synTradeNo":null,"asynTradeNo":null,"img1":"objectName1","img2":"objectName2","img3":"objectName3","img4":"objectName4","img5":"objectName5","toushouAmount":0,"toushouUserId":null},"currentToubiAmount":4,"toushouRecordList":[{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000}]}
      */
 
     private int code;
     private String msg;
-    private List<DataBean> data;
+    private DataBean data;
 
     public int getCode() {
         return code;
@@ -33,22 +34,24 @@ public class OrderListOutModel {
         this.msg = msg;
     }
 
-    public List<DataBean> getData() {
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(DataBean data) {
         this.data = data;
     }
 
     public static class DataBean {
         /**
-         * order : {"id":152,"userId":16,"orderNo":"S201805211006369040001","orderStatus":3,"orderType":3,"machineNo":"86755","carId":30,"startSlotTime":1526875585000,"totalAmount":61,"discountAmount":0,"payAmount":61,"couponId":"","remark":"666","monthNum":0,"isDelete":0,"createTime":1526868396000,"updateTime":1527318461000,"updateTime0":1527318461000,"carType":2,"createTime0":1526868396000,"startSlotTime0":1526868396000,"pillarColor":"red","areaCode":"HDMT","parkingSpace":"","synTradeNo":"","asynTradeNo":"S201805211006369040001","img1":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/l/homepage/appcenter/zh-tw/579.bmp","img2":"","img3":"","img4":"","img5":"","toushouAmount":0,"toushouUserId":1526875585000}
-         * soltMachine : {"id":729,"machineNo":"86755","carType":2,"pillarColor":"red","longitude":113.5357,"latitude":22.2121,"areaCode":"HDMT","address":"青州河邊馬路","parkingSpaces":"","isDelete":0,"createTime":1526868396000,"updateTime":1526868396000,"updateTime0":1526868396000,"createTime0":1526868396000}
+         * order : {"id":19,"userId":16,"orderNo":"U201710221223000520001","orderStatus":3,"orderType":4,"machineNo":"","carId":12,"startSlotTime":1506747553000,"totalAmount":40,"discountAmount":0,"payAmount":40,"couponId":null,"remark":"xxxxxxxxxxxxxxx","monthNum":0,"isDelete":0,"createTime":1508646181000,"updateTime":1524582993000,"updateTime0":null,"carType":1,"createTime0":null,"startSlotTime0":null,"pillarColor":"yellow","areaCode":"QT","parkingSpace":"","synTradeNo":null,"asynTradeNo":null,"img1":"objectName1","img2":"objectName2","img3":"objectName3","img4":"objectName4","img5":"objectName5","toushouAmount":0,"toushouUserId":null}
+         * currentToubiAmount : 4
+         * toushouRecordList : [{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000}]
          */
 
         private OrderBean order;
-        private SoltMachineBean soltMachine;
+        private int currentToubiAmount;
+        private List<ToushouRecordListBean> toushouRecordList;
 
         public OrderBean getOrder() {
             return order;
@@ -58,49 +61,57 @@ public class OrderListOutModel {
             this.order = order;
         }
 
-        public SoltMachineBean getSoltMachine() {
-            return soltMachine;
+        public int getCurrentToubiAmount() {
+            return currentToubiAmount;
         }
 
-        public void setSoltMachine(SoltMachineBean soltMachine) {
-            this.soltMachine = soltMachine;
+        public void setCurrentToubiAmount(int currentToubiAmount) {
+            this.currentToubiAmount = currentToubiAmount;
+        }
+
+        public List<ToushouRecordListBean> getToushouRecordList() {
+            return toushouRecordList;
+        }
+
+        public void setToushouRecordList(List<ToushouRecordListBean> toushouRecordList) {
+            this.toushouRecordList = toushouRecordList;
         }
 
         public static class OrderBean {
             /**
-             * id : 152
+             * id : 19
              * userId : 16
-             * orderNo : S201805211006369040001
+             * orderNo : U201710221223000520001
              * orderStatus : 3
-             * orderType : 3
-             * machineNo : 86755
-             * carId : 30
-             * startSlotTime : 1526875585000
-             * totalAmount : 61
+             * orderType : 4
+             * machineNo :
+             * carId : 12
+             * startSlotTime : 1506747553000
+             * totalAmount : 40
              * discountAmount : 0
-             * payAmount : 61
-             * couponId :
-             * remark : 666
+             * payAmount : 40
+             * couponId : null
+             * remark : xxxxxxxxxxxxxxx
              * monthNum : 0
              * isDelete : 0
-             * createTime : 1526868396000
-             * updateTime : 1527318461000
-             * updateTime0 : 1527318461000
-             * carType : 2
-             * createTime0 : 1526868396000
-             * startSlotTime0 : 1526868396000
-             * pillarColor : red
-             * areaCode : HDMT
+             * createTime : 1508646181000
+             * updateTime : 1524582993000
+             * updateTime0 : null
+             * carType : 1
+             * createTime0 : null
+             * startSlotTime0 : null
+             * pillarColor : yellow
+             * areaCode : QT
              * parkingSpace :
-             * synTradeNo :
-             * asynTradeNo : S201805211006369040001
-             * img1 : http://test-pic-666.oss-cn-hongkong.aliyuncs.com/l/homepage/appcenter/zh-tw/579.bmp
-             * img2 :
-             * img3 :
-             * img4 :
-             * img5 :
+             * synTradeNo : null
+             * asynTradeNo : null
+             * img1 : objectName1
+             * img2 : objectName2
+             * img3 : objectName3
+             * img4 : objectName4
+             * img5 : objectName5
              * toushouAmount : 0
-             * toushouUserId : 1526875585000
+             * toushouUserId : null
              */
 
             private int id;
@@ -114,28 +125,28 @@ public class OrderListOutModel {
             private int totalAmount;
             private int discountAmount;
             private int payAmount;
-            private String couponId;
+            private Object couponId;
             private String remark;
             private int monthNum;
             private int isDelete;
             private long createTime;
             private long updateTime;
-            private long updateTime0;
+            private Object updateTime0;
             private int carType;
-            private long createTime0;
-            private long startSlotTime0;
+            private Object createTime0;
+            private Object startSlotTime0;
             private String pillarColor;
             private String areaCode;
             private String parkingSpace;
-            private String synTradeNo;
-            private String asynTradeNo;
+            private Object synTradeNo;
+            private Object asynTradeNo;
             private String img1;
             private String img2;
             private String img3;
             private String img4;
             private String img5;
             private int toushouAmount;
-            private long toushouUserId;
+            private Object toushouUserId;
 
             public int getId() {
                 return id;
@@ -225,11 +236,11 @@ public class OrderListOutModel {
                 this.payAmount = payAmount;
             }
 
-            public String getCouponId() {
+            public Object getCouponId() {
                 return couponId;
             }
 
-            public void setCouponId(String couponId) {
+            public void setCouponId(Object couponId) {
                 this.couponId = couponId;
             }
 
@@ -273,11 +284,11 @@ public class OrderListOutModel {
                 this.updateTime = updateTime;
             }
 
-            public long getUpdateTime0() {
+            public Object getUpdateTime0() {
                 return updateTime0;
             }
 
-            public void setUpdateTime0(long updateTime0) {
+            public void setUpdateTime0(Object updateTime0) {
                 this.updateTime0 = updateTime0;
             }
 
@@ -289,19 +300,19 @@ public class OrderListOutModel {
                 this.carType = carType;
             }
 
-            public long getCreateTime0() {
+            public Object getCreateTime0() {
                 return createTime0;
             }
 
-            public void setCreateTime0(long createTime0) {
+            public void setCreateTime0(Object createTime0) {
                 this.createTime0 = createTime0;
             }
 
-            public long getStartSlotTime0() {
+            public Object getStartSlotTime0() {
                 return startSlotTime0;
             }
 
-            public void setStartSlotTime0(long startSlotTime0) {
+            public void setStartSlotTime0(Object startSlotTime0) {
                 this.startSlotTime0 = startSlotTime0;
             }
 
@@ -329,19 +340,19 @@ public class OrderListOutModel {
                 this.parkingSpace = parkingSpace;
             }
 
-            public String getSynTradeNo() {
+            public Object getSynTradeNo() {
                 return synTradeNo;
             }
 
-            public void setSynTradeNo(String synTradeNo) {
+            public void setSynTradeNo(Object synTradeNo) {
                 this.synTradeNo = synTradeNo;
             }
 
-            public String getAsynTradeNo() {
+            public Object getAsynTradeNo() {
                 return asynTradeNo;
             }
 
-            public void setAsynTradeNo(String asynTradeNo) {
+            public void setAsynTradeNo(Object asynTradeNo) {
                 this.asynTradeNo = asynTradeNo;
             }
 
@@ -393,47 +404,35 @@ public class OrderListOutModel {
                 this.toushouAmount = toushouAmount;
             }
 
-            public long getToushouUserId() {
+            public Object getToushouUserId() {
                 return toushouUserId;
             }
 
-            public void setToushouUserId(long toushouUserId) {
+            public void setToushouUserId(Object toushouUserId) {
                 this.toushouUserId = toushouUserId;
             }
         }
 
-        public static class SoltMachineBean {
+        public static class ToushouRecordListBean {
             /**
-             * id : 729
-             * machineNo : 86755
-             * carType : 2
-             * pillarColor : red
-             * longitude : 113.5357
-             * latitude : 22.2121
-             * areaCode : HDMT
-             * address : 青州河邊馬路
-             * parkingSpaces :
-             * isDelete : 0
-             * createTime : 1526868396000
-             * updateTime : 1526868396000
-             * updateTime0 : 1526868396000
-             * createTime0 : 1526868396000
+             * id : 1
+             * orderNo : U201710221222174430001
+             * userId : 11
+             * username : test11
+             * amount : 4
+             * status : 2
+             * createTime : 1524583058000
+             * finishTime : 1524583064000
              */
 
             private int id;
-            private String machineNo;
-            private int carType;
-            private String pillarColor;
-            private double longitude;
-            private double latitude;
-            private String areaCode;
-            private String address;
-            private String parkingSpaces;
-            private int isDelete;
+            private String orderNo;
+            private int userId;
+            private String username;
+            private int amount;
+            private int status;
             private long createTime;
-            private long updateTime;
-            private long updateTime0;
-            private long createTime0;
+            private long finishTime;
 
             public int getId() {
                 return id;
@@ -443,76 +442,44 @@ public class OrderListOutModel {
                 this.id = id;
             }
 
-            public String getMachineNo() {
-                return machineNo;
+            public String getOrderNo() {
+                return orderNo;
             }
 
-            public void setMachineNo(String machineNo) {
-                this.machineNo = machineNo;
+            public void setOrderNo(String orderNo) {
+                this.orderNo = orderNo;
             }
 
-            public int getCarType() {
-                return carType;
+            public int getUserId() {
+                return userId;
             }
 
-            public void setCarType(int carType) {
-                this.carType = carType;
+            public void setUserId(int userId) {
+                this.userId = userId;
             }
 
-            public String getPillarColor() {
-                return pillarColor;
+            public String getUsername() {
+                return username;
             }
 
-            public void setPillarColor(String pillarColor) {
-                this.pillarColor = pillarColor;
+            public void setUsername(String username) {
+                this.username = username;
             }
 
-            public double getLongitude() {
-                return longitude;
+            public int getAmount() {
+                return amount;
             }
 
-            public void setLongitude(double longitude) {
-                this.longitude = longitude;
+            public void setAmount(int amount) {
+                this.amount = amount;
             }
 
-            public double getLatitude() {
-                return latitude;
+            public int getStatus() {
+                return status;
             }
 
-            public void setLatitude(double latitude) {
-                this.latitude = latitude;
-            }
-
-            public String getAreaCode() {
-                return areaCode;
-            }
-
-            public void setAreaCode(String areaCode) {
-                this.areaCode = areaCode;
-            }
-
-            public String getAddress() {
-                return address;
-            }
-
-            public void setAddress(String address) {
-                this.address = address;
-            }
-
-            public String getParkingSpaces() {
-                return parkingSpaces;
-            }
-
-            public void setParkingSpaces(String parkingSpaces) {
-                this.parkingSpaces = parkingSpaces;
-            }
-
-            public int getIsDelete() {
-                return isDelete;
-            }
-
-            public void setIsDelete(int isDelete) {
-                this.isDelete = isDelete;
+            public void setStatus(int status) {
+                this.status = status;
             }
 
             public long getCreateTime() {
@@ -523,28 +490,12 @@ public class OrderListOutModel {
                 this.createTime = createTime;
             }
 
-            public long getUpdateTime() {
-                return updateTime;
+            public long getFinishTime() {
+                return finishTime;
             }
 
-            public void setUpdateTime(long updateTime) {
-                this.updateTime = updateTime;
-            }
-
-            public long getUpdateTime0() {
-                return updateTime0;
-            }
-
-            public void setUpdateTime0(long updateTime0) {
-                this.updateTime0 = updateTime0;
-            }
-
-            public long getCreateTime0() {
-                return createTime0;
-            }
-
-            public void setCreateTime0(long createTime0) {
-                this.createTime0 = createTime0;
+            public void setFinishTime(long finishTime) {
+                this.finishTime = finishTime;
             }
         }
     }

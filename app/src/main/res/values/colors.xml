@@ -9,5 +9,7 @@
     <color name="colorLineGray">#c9c9c9</color>
     <color name="colorDrakGray">#707070</color>
     <color name="colorGray">#434345</color>
+    <color name="colorBlack">#000000</color>
     <color name="colorWayOringe">#bbF45428</color>
+    <color name="colorWayOringetranspracy">#88F45428</color>
 </resources>

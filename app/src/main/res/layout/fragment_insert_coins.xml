@@ -11,12 +11,11 @@
         android:background="@color/colorPrimaryDark"
         android:padding="10dp">
         <ImageView
-            android:id="@+id/insert_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/insert_unknown_machanie"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/refresh"
-            android:visibility="invisible"/>
+            android:src="@mipmap/order_history"/>
 
         <TextView
             android:id="@+id/insert_title"
@@ -31,8 +30,8 @@
 
         <ImageView
             android:id="@+id/insert_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:src="@mipmap/refresh"/>
     </LinearLayout>
