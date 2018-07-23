@@ -19,6 +19,7 @@ import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.CHView.NoScrollGridView;
 import com.bssf.john_li.coinhand.CHView.NoScrollListView;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -136,7 +137,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     refreshUI();
                     loadingLL.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                     orderDetialLoadFail();
                 }
             }
@@ -166,7 +167,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
      * 獲取訂單詳情成功刷新界面
      */
     private void refreshUI() {
-        x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
+        //x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
+        Picasso.with(this).load(mOrderDetialModel.getImg1()).placeholder(R.mipmap.load_img_fail).into(carIv);
         moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
@@ -254,12 +256,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onSuccess(String result) {
                 OrderDetialOutModel model = new Gson().fromJson(result.toString(), OrderDetialOutModel.class);
-                if (model.getCode() == 0) {
+                if (model.getCode() == 200) {
                     isReciverOrder = true;
                     isRecieverTv.setVisibility(View.VISIBLE);
                     Toast.makeText(OrderDetialActivity.this, "接單成功！", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "接單失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "接單失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
@@ -308,12 +310,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onSuccess(String result) {
                 OrderDetialOutModel model = new Gson().fromJson(result.toString(), OrderDetialOutModel.class);
-                if (model.getCode() == 0) {
+                if (model.getCode() == 200) {
                     Toast.makeText(OrderDetialActivity.this, "本階段投幣成功！", Toast.LENGTH_SHORT).show();
                     EventBus.getDefault().post("FINISH_ORDER_ONCE");
                     finish();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
