@@ -185,6 +185,16 @@
                     android:padding="10dp"/>
 
                 <TextView
+                    android:id="@+id/order_detial_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="地        址：未知"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_margin="5dp"
+                    android:padding="10dp"/>
+
+                <TextView
                     android:id="@+id/order_detial_receiver_tv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

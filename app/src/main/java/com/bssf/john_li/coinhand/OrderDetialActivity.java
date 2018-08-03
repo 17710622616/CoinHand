@@ -42,12 +42,14 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private NoScrollListView oparetionRecordLv;
     private NoScrollGridView order_img_gv;
     private ImageView carIv, backIv, submitIv, loadingIv;
-    private TextView orderNoTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
+    private TextView orderNoTv, addressTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
 
     private String orderNo;
+    private String mAddress;
     // 是否接單成功
     private boolean isReciverOrder = false;
     private OrderDetialOutModel.DataBean.OrderBean mOrderDetialModel;
+    private OrderDetialOutModel.DataBean.SoltMachineBean mSoltMachineBean;
     private int currentToubiAmount;
     private List<OrderDetialOutModel.DataBean.ToushouRecordListBean> mToushouRecordList;
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
@@ -69,6 +71,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         backIv = findViewById(R.id.order_detial_back);
         submitIv = findViewById(R.id.order_detial_submit);
         orderNoTv = findViewById(R.id.order_detial_orderno);
+        addressTv = findViewById(R.id.order_detial_address);
         carNoTv = findViewById(R.id.order_detial_carno);
         carTypeTv = findViewById(R.id.order_detial_cartype);
         startSlotTimeTv = findViewById(R.id.order_detial_start_slottime);
@@ -96,7 +99,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     public void initData() {
         Intent intent = getIntent();
         orderNo = intent.getStringExtra("orderNo");
-        orderNoTv.setText("訂單編號" + String.valueOf(orderNo));
+        orderNoTv.setText("訂單編號：" + String.valueOf(orderNo));
+        if (intent.getStringExtra("address") != null) {
+            mAddress = intent.getStringExtra("address");
+        }
         mToushouRecordList = new ArrayList<>();
         mOrderOperationRecordAdapter = new OrderOperationRecordAdapter(mToushouRecordList, this);
         oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
@@ -132,6 +138,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 if (model.getCode() == 200) {
                     Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情成功！", Toast.LENGTH_SHORT).show();
                     mOrderDetialModel = model.getData().getOrder();
+                    mSoltMachineBean = model.getData().getSoltMachine();
                     currentToubiAmount = model.getData().getCurrentToubiAmount();
                     mToushouRecordList = model.getData().getToushouRecordList();
                     refreshUI();
@@ -169,10 +176,11 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private void refreshUI() {
         //x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
         Picasso.with(this).load(mOrderDetialModel.getImg1()).placeholder(R.mipmap.load_img_fail).into(carIv);
+        addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
         moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
-        machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo());
+        machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo() + "：車位" + mOrderDetialModel.getParkingSpace());
         areaTv.setText("區域編號：" + mOrderDetialModel.getAreaCode());
         carNoTv.setText("車牌號碼：" + mOrderDetialModel.getCarId());
         switch (mOrderDetialModel.getCarType()) {

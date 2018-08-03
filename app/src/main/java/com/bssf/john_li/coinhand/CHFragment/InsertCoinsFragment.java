@@ -516,6 +516,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrder().getOrderNo());
+                intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
