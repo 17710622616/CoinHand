@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
+import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.OrderDetialActivity;
@@ -464,14 +465,22 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
             if (orderList.get(i).getOrder().getMachineNo() != null) {
-                MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
-                options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
-            /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-                Marker marker = mGoogleMap.addMarker(options);
-                marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
-            } else {
+                if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
+                    MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
+                    options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
+                    String no = orderList.get(i).getSoltMachine().getMachineNo();
+                    long timeDiff = CHCommonUtils.compareTimestamps(orderList.get(i).getOrder().getStartSlotTime());
+                    if (timeDiff > -30) {
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    } else if (timeDiff > -60){
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                    } else {
+                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    }
+                    Marker marker = mGoogleMap.addMarker(options);
+                    marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
+                }
+            } else {    // 当时未知订单加入未知订单列表
                 orderMachineUnknowList.add(orderList.get(i));
             }
         }

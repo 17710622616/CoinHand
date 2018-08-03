@@ -385,6 +385,65 @@ public class CHCommonUtils {
     }
 
     /**
+     * 比较两个时间戳
+     * @param hqtime    原始时间
+     */
+    public static long compareTimestamps(long hqtime) {
+        //获取当前时间戳
+        System.currentTimeMillis();
+        Long s = (System.currentTimeMillis() - hqtime) / (1000 * 60);
+        return s;
+    }
+
+    /**
+     * 判断选择的日期是否是本周
+     * @param time
+     * @return
+     */
+    public static boolean isThisWeek(long time)
+    {
+        Calendar calendar = Calendar.getInstance();
+        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        calendar.setTime(new Date(time));
+        int paramWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+        if(paramWeek==currentWeek){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断选择的日期是否是今天
+     * @param time
+     * @return
+     */
+    public static boolean isToday(long time)
+    {
+        return isThisTime(time,"yyyy-MM-dd");
+    }
+
+    /**
+     * 判断选择的日期是否是本月
+     * @param time
+     * @return
+     */
+    public static boolean isThisMonth(long time)
+    {
+        return isThisTime(time,"yyyy-MM");
+    }
+
+    private static boolean isThisTime(long time,String pattern) {
+        Date date = new Date(time);
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String param = sdf.format(date);//参数时间
+        String now = sdf.format(new Date());//当前时间
+        if(param.equals(now)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 根据item测量GridView高度
      * @param gridView
      */
