@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
+import com.bssf.john_li.coinhand.CHAdapter.PopUnKnowOrderListAdapter;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
@@ -464,8 +465,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         mGoogleMap.clear();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
-            if (orderList.get(i).getOrder().getMachineNo() != null) {
-                if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
+            if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
+                if (orderList.get(i).getOrder().getMachineNo() != null) {
                     MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
                     options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
                     String no = orderList.get(i).getSoltMachine().getMachineNo();
@@ -479,9 +480,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     }
                     Marker marker = mGoogleMap.addMarker(options);
                     marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
+                } else {    // 当时未知订单加入未知订单列表
+                    orderMachineUnknowList.add(orderList.get(i));
                 }
-            } else {    // 当时未知订单加入未知订单列表
-                orderMachineUnknowList.add(orderList.get(i));
             }
         }
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
@@ -545,7 +546,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 mPopWindow.dismiss();
             }
         });
-        PopOrderListAdapter adapter = new PopOrderListAdapter(orderMachineUnknowList, getActivity());
+        PopUnKnowOrderListAdapter adapter = new PopUnKnowOrderListAdapter(orderMachineUnknowList, getActivity());
         popOrderList.setAdapter(adapter);
         popOrderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
