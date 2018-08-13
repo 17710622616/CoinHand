@@ -42,6 +42,7 @@
         <activity android:name=".OrderListActivity"/>
         <activity android:name=".WorkAreaActivity"/>
         <activity android:name=".OrderDetialActivity"/>
+        <activity android:name=".AllSlotMachineMapActivity"/>
     </application>
 
 </manifest>

@@ -121,4 +121,16 @@
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:background="@color/colorDrakGray"/>
+    <TextView
+        android:id="@+id/mine_all_sm_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="所有咪錶地圖"
+        android:textSize="18sp"
+        android:padding="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/colorDrakGray"/>
 </LinearLayout>
