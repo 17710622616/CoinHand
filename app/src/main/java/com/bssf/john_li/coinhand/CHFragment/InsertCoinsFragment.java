@@ -180,6 +180,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("MAPLOGS", "InsertonMapReady");
         mGoogleMap = googleMap;
         if (mGoogleMap != null) {
             // 允许获取我的位置
@@ -221,6 +222,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     protected void onPauseLazy() {
+        Log.d("MAPLOGS", "InsertonPauseLazy");
         super.onPauseLazy();
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
@@ -233,6 +235,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     protected synchronized void buildGoogleApiClient() {//4
+        Log.d("MAPLOGS", "InsertbuildGoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -242,6 +245,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("MAPLOGS", "InsertonConnected");
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (isGPSEnabled || isNetworkEnabled) {
@@ -287,6 +291,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("MAPLOGS", "onRequestPermissionsResult");
         switch (requestCode) {
             case REQUESTCODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -373,6 +378,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * @return
      */
     public static String getAddress(Context context, double latitude, double longitude) {//6
+        Log.d("MAPLOGS", "InsertgetAddress");
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
@@ -408,6 +414,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * 請求訂單列表
      */
     private void loadOrderList() {
+        Log.d("MAPLOGS", "InsertloadOrderList");
         orderList = new ArrayList<>();
         orderMachineUnknowList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());

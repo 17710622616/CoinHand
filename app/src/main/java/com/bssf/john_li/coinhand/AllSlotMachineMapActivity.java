@@ -109,7 +109,6 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
             layoutParams.setMargins(0, 120, 30, 0);
         }
-
     }
 
     @Override
@@ -149,6 +148,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("MAPLOGS", "ALLonMapReady");
         mGoogleMap = googleMap;
         // 允许获取我的位置
         try {
@@ -189,6 +189,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
 
     @Override
     protected void onDestroy() {
+        Log.d("MAPLOGS", "ALLonDestroy");
         super.onDestroy();
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
@@ -201,6 +202,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
     }
 
     protected synchronized void buildGoogleApiClient() {//4
+        Log.d("MAPLOGS", "ALLbuildGoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(AllSlotMachineMapActivity.this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -210,6 +212,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("MAPLOGS", "ALLonConnected");
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (isGPSEnabled || isNetworkEnabled) {
@@ -255,6 +258,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("MAPLOGS", "ALLonRequestPermissionsResult");
         switch (requestCode) {
             case REQUESTCODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -340,6 +344,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
      * @return
      */
     public static String getAddress(Context context, double latitude, double longitude) {//6
+        Log.d("MAPLOGS", "ALLgetAddress");
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
