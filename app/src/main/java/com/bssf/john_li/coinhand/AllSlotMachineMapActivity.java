@@ -180,7 +180,8 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(AllSlotMachineMapActivity.this, (String)marker.getTag(), Toast.LENGTH_SHORT).show();
+                LatLng cacheLatLng =  marker.getPosition();
+                addressTv.setText(getAddress(AllSlotMachineMapActivity.this, cacheLatLng.latitude, cacheLatLng.longitude));
                 return false;
             }
         });
@@ -380,7 +381,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
             // 添加新的marker集合到界面
             for (int i = 0; i < smModel.getData().getData().size(); i++) {
                 MarkerOptions options = new MarkerOptions().position(new LatLng(smModel.getData().getData().get(i).getLatitude(), smModel.getData().getData().get(i).getLongitude()));
-                options.title("地址:" + String.valueOf(smModel.getData().getData().get(i).getAddress()) + "咪錶編號:" + String.valueOf(smModel.getData().getData().get(i).getMachineNo()));
+                options.title("地址:" + smModel.getData().getData().get(i).getAddress() + "咪錶編號:" + String.valueOf(smModel.getData().getData().get(i).getMachineNo()));
                 String no = smModel.getData().getData().get(i).getMachineNo();
                 //options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin));

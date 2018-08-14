@@ -83,7 +83,6 @@
             android:padding="5dp"
             android:gravity="center"
             android:text="当前地址：定位中..."
-            android:background="@color/colorWayOringe"
-            android:visibility="invisible"/>
+            android:background="@color/colorWayOringe"/>
     </FrameLayout>
 </LinearLayout>

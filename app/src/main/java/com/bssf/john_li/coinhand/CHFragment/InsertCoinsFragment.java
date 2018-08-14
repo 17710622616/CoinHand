@@ -181,40 +181,42 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        // 允许获取我的位置
-        try {
-            mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-            mGoogleMap.setMyLocationEnabled(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-        buildGoogleApiClient();
-        mGoogleApiClient.connect();
+        if (mGoogleMap != null) {
+            // 允许获取我的位置
+            try {
+                mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+                mGoogleMap.setMyLocationEnabled(true);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
 
-        // 定位按鈕觸發事件：重新定位
-        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                //onConnected(null);
-                if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    if (mGoogleMap != null) {
-                        mGoogleMap.clear();
+            // 定位按鈕觸發事件：重新定位
+            mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    //onConnected(null);
+                    if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        if (mGoogleMap != null) {
+                            mGoogleMap.clear();
+                        }
+                        onMapReady(mGoogleMap);
+                    } else {
+                        Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
                     }
-                    onMapReady(mGoogleMap);
-                } else {
-                    Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                showOrderListPop((String)marker.getTag());
-                return false;
-            }
-        });
+            mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    showOrderListPop((String)marker.getTag());
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
