@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
 import com.bssf.john_li.coinhand.CHAdapter.PopUnKnowOrderListAdapter;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
+import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
@@ -95,6 +96,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private Location mLastLocation = null;
     private String mAddress;
     private List<OrderListOutModel.DataBean> orderList;
+    // 已知咪錶的訂單
+    private List<OrderListOutModel.DataBean> orderMaachineKnownList;
     // 未知機器的訂單
     private List<OrderListOutModel.DataBean> orderMachineUnknowList;
     private int totalCount = 0;
@@ -356,12 +359,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
                     //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                    LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
-                        @Override
-                        public void onLocationResult(LocationResult locationResult) {
-                            super.onLocationResult(locationResult);
-                        }
-                    });
+                    if (mGoogleApiClient.isConnected()) {
+                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(LocationResult locationResult) {
+                                super.onLocationResult(locationResult);
+                            }
+                        });
+                    }
                     break;
                 case 2:
                     loadMapFail();
@@ -417,6 +422,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         Log.d("MAPLOGS", "InsertloadOrderList");
         orderList = new ArrayList<>();
         orderMachineUnknowList = new ArrayList<>();
+        orderMaachineKnownList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setTitle("系統");
         dialog.setMessage("正在獲取最新訂單列表中......");
@@ -480,15 +486,29 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
                     String no = orderList.get(i).getSoltMachine().getMachineNo();
                     long timeDiff = CHCommonUtils.compareTimestamps(orderList.get(i).getOrder().getStartSlotTime());
+                    Log.d("timeDiff", "timeDiff1" + String.valueOf(timeDiff));
+                    Log.d("timeDiff", "orderMaachineKnownListSize=" + orderMaachineKnownList.size());
+                    for (int j = 0; j < orderMaachineKnownList.size(); j++) {
+                        if (orderMaachineKnownList.get(j).getOrder().getMachineNo().equals(orderList.get(i).getOrder().getMachineNo())) {
+                            long cacheTimeDiff = CHCommonUtils.compareTimestamps(orderMaachineKnownList.get(j).getOrder().getStartSlotTime());
+                            Log.d("timeDiff", "cacheTimeDiff" + String.valueOf(cacheTimeDiff));
+                            if(timeDiff < cacheTimeDiff) {  // 當前訂單的時間比已知列表中同一個咪錶下的訂單小，則目前緊急度較小，將已知列表中同一個咪錶小的訂單作為緊急訂單，時間差改為cacheTimeDiff
+                                timeDiff = cacheTimeDiff;
+                            }
+                        }
+                    }
+                    Log.d("timeDiff", "timeDiff2" + String.valueOf(timeDiff));
+
                     if (timeDiff > -30) {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin));
                     } else if (timeDiff > -60){
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_y));
                     } else {
-                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_g));
                     }
                     Marker marker = mGoogleMap.addMarker(options);
                     marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
+                    orderMaachineKnownList.add(orderList.get(i));
                 } else {    // 当时未知订单加入未知订单列表
                     orderMachineUnknowList.add(orderList.get(i));
                 }
@@ -577,7 +597,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      */
     private List<OrderListOutModel.DataBean> getOrderList(String machineNo) {
         List<OrderListOutModel.DataBean> list = new ArrayList<>();
-        for (OrderListOutModel.DataBean model : orderList) {
+        for (OrderListOutModel.DataBean model : orderMaachineKnownList) {
             if (model.getOrder().getMachineNo() != null) {
                 if (model.getSoltMachine().getMachineNo().equals(machineNo)) {
                     list.add(model);

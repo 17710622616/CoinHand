@@ -176,7 +176,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private void refreshUI() {
         //x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
         Picasso.with(this).load(mOrderDetialModel.getImg1()).placeholder(R.mipmap.load_img_fail).into(carIv);
-        addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
+        if (mSoltMachineBean != null) {
+            addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
+        }
         moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
