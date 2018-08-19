@@ -29,8 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
+import com.bssf.john_li.coinhand.CHAdapter.PopUnKnowOrderListAdapter;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
+import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
+import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.OrderDetialActivity;
@@ -93,6 +96,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private Location mLastLocation = null;
     private String mAddress;
     private List<OrderListOutModel.DataBean> orderList;
+    // 已知咪錶的訂單
+    private List<OrderListOutModel.DataBean> orderMaachineKnownList;
     // 未知機器的訂單
     private List<OrderListOutModel.DataBean> orderMachineUnknowList;
     private int totalCount = 0;
@@ -178,45 +183,49 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("MAPLOGS", "InsertonMapReady");
         mGoogleMap = googleMap;
-        // 允许获取我的位置
-        try {
-            mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
-            mGoogleMap.setMyLocationEnabled(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-        buildGoogleApiClient();
-        mGoogleApiClient.connect();
+        if (mGoogleMap != null) {
+            // 允许获取我的位置
+            try {
+                mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+                mGoogleMap.setMyLocationEnabled(true);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
 
-        // 定位按鈕觸發事件：重新定位
-        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-            @Override
-            public boolean onMyLocationButtonClick() {
-                //onConnected(null);
-                if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                    if (mGoogleMap != null) {
-                        mGoogleMap.clear();
+            // 定位按鈕觸發事件：重新定位
+            mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    //onConnected(null);
+                    if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        if (mGoogleMap != null) {
+                            mGoogleMap.clear();
+                        }
+                        onMapReady(mGoogleMap);
+                    } else {
+                        Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
                     }
-                    onMapReady(mGoogleMap);
-                } else {
-                    Toast.makeText(getActivity(), "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                showOrderListPop((String)marker.getTag());
-                return false;
-            }
-        });
+            mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    showOrderListPop((String)marker.getTag());
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
     protected void onPauseLazy() {
+        Log.d("MAPLOGS", "InsertonPauseLazy");
         super.onPauseLazy();
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
@@ -229,6 +238,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     protected synchronized void buildGoogleApiClient() {//4
+        Log.d("MAPLOGS", "InsertbuildGoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -238,6 +248,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("MAPLOGS", "InsertonConnected");
         boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (isGPSEnabled || isNetworkEnabled) {
@@ -283,6 +294,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("MAPLOGS", "onRequestPermissionsResult");
         switch (requestCode) {
             case REQUESTCODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -347,12 +359,14 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
                     //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                    LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
-                        @Override
-                        public void onLocationResult(LocationResult locationResult) {
-                            super.onLocationResult(locationResult);
-                        }
-                    });
+                    if (mGoogleApiClient.isConnected()) {
+                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(LocationResult locationResult) {
+                                super.onLocationResult(locationResult);
+                            }
+                        });
+                    }
                     break;
                 case 2:
                     loadMapFail();
@@ -369,6 +383,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * @return
      */
     public static String getAddress(Context context, double latitude, double longitude) {//6
+        Log.d("MAPLOGS", "InsertgetAddress");
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> address = geocoder.getFromLocation(latitude, longitude, 1);
@@ -404,8 +419,10 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * 請求訂單列表
      */
     private void loadOrderList() {
+        Log.d("MAPLOGS", "InsertloadOrderList");
         orderList = new ArrayList<>();
         orderMachineUnknowList = new ArrayList<>();
+        orderMaachineKnownList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setTitle("系統");
         dialog.setMessage("正在獲取最新訂單列表中......");
@@ -463,16 +480,38 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         mGoogleMap.clear();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
-            if (orderList.get(i).getOrder().getMachineNo() != null) {
-                MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
-                options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
-            /*options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));*/
-                Marker marker = mGoogleMap.addMarker(options);
-                marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
-            } else {
-                orderMachineUnknowList.add(orderList.get(i));
+            if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
+                if (orderList.get(i).getOrder().getMachineNo() != null) {
+                    MarkerOptions options = new MarkerOptions().position(new LatLng(orderList.get(i).getSoltMachine().getLatitude(), orderList.get(i).getSoltMachine().getLongitude()));
+                    options.title("地址:" + String.valueOf(orderList.get(i).getSoltMachine().getAddress()));
+                    String no = orderList.get(i).getSoltMachine().getMachineNo();
+                    long timeDiff = CHCommonUtils.compareTimestamps(orderList.get(i).getOrder().getStartSlotTime());
+                    Log.d("timeDiff", "timeDiff1" + String.valueOf(timeDiff));
+                    Log.d("timeDiff", "orderMaachineKnownListSize=" + orderMaachineKnownList.size());
+                    for (int j = 0; j < orderMaachineKnownList.size(); j++) {
+                        if (orderMaachineKnownList.get(j).getOrder().getMachineNo().equals(orderList.get(i).getOrder().getMachineNo())) {
+                            long cacheTimeDiff = CHCommonUtils.compareTimestamps(orderMaachineKnownList.get(j).getOrder().getStartSlotTime());
+                            Log.d("timeDiff", "cacheTimeDiff" + String.valueOf(cacheTimeDiff));
+                            if(timeDiff < cacheTimeDiff) {  // 當前訂單的時間比已知列表中同一個咪錶下的訂單小，則目前緊急度較小，將已知列表中同一個咪錶小的訂單作為緊急訂單，時間差改為cacheTimeDiff
+                                timeDiff = cacheTimeDiff;
+                            }
+                        }
+                    }
+                    Log.d("timeDiff", "timeDiff2" + String.valueOf(timeDiff));
+
+                    if (timeDiff > -30) {
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin));
+                    } else if (timeDiff > -60){
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_y));
+                    } else {
+                        options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_g));
+                    }
+                    Marker marker = mGoogleMap.addMarker(options);
+                    marker.setTag(orderList.get(i).getSoltMachine().getMachineNo());
+                    orderMaachineKnownList.add(orderList.get(i));
+                } else {    // 当时未知订单加入未知订单列表
+                    orderMachineUnknowList.add(orderList.get(i));
+                }
             }
         }
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
@@ -507,6 +546,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrder().getOrderNo());
+                intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -535,7 +575,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 mPopWindow.dismiss();
             }
         });
-        PopOrderListAdapter adapter = new PopOrderListAdapter(orderMachineUnknowList, getActivity());
+        PopUnKnowOrderListAdapter adapter = new PopUnKnowOrderListAdapter(orderMachineUnknowList, getActivity());
         popOrderList.setAdapter(adapter);
         popOrderList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -557,7 +597,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      */
     private List<OrderListOutModel.DataBean> getOrderList(String machineNo) {
         List<OrderListOutModel.DataBean> list = new ArrayList<>();
-        for (OrderListOutModel.DataBean model : orderList) {
+        for (OrderListOutModel.DataBean model : orderMaachineKnownList) {
             if (model.getOrder().getMachineNo() != null) {
                 if (model.getSoltMachine().getMachineNo().equals(machineNo)) {
                     list.add(model);

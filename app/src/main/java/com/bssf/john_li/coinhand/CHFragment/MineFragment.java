@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bssf.john_li.coinhand.AllSlotMachineMapActivity;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.LoginActivity;
 import com.bssf.john_li.coinhand.OrderListActivity;
@@ -19,7 +20,7 @@ import com.bssf.john_li.coinhand.WorkAreaActivity;
 
 public class MineFragment extends LazyLoadFragment implements View.OnClickListener{
     public static String TAG = MineFragment.class.getName();
-    private TextView loginOutTv, didOrderTv, workAreaTv;
+    private TextView loginOutTv, didOrderTv, workAreaTv, allSMTv;
 
     public static MineFragment newInstance(){
         return new MineFragment();
@@ -37,12 +38,14 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
         loginOutTv = (TextView) findViewById(R.id.mine_login_out);
         didOrderTv = (TextView) findViewById(R.id.mine_did_order);
         workAreaTv = (TextView) findViewById(R.id.mine_work_area);
+        allSMTv = (TextView) findViewById(R.id.mine_all_sm_list);
     }
 
     private void setlistener() {
         loginOutTv.setOnClickListener(this);
         didOrderTv.setOnClickListener(this);
         workAreaTv.setOnClickListener(this);
+        allSMTv.setOnClickListener(this);
     }
 
     @Override
@@ -67,6 +70,9 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
                 break;
             case R.id.mine_work_area:
                 startActivity(new Intent(getActivity(), WorkAreaActivity.class));
+                break;
+            case R.id.mine_all_sm_list:
+                startActivity(new Intent(getActivity(), AllSlotMachineMapActivity.class));
                 break;
         }
     }

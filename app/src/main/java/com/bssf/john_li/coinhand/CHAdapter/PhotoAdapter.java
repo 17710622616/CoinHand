@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bssf.john_li.coinhand.R;
+import com.squareup.picasso.Picasso;
 
 import org.xutils.image.ImageOptions;
 import org.xutils.x;
@@ -60,8 +61,8 @@ public class PhotoAdapter extends BaseAdapter {
         if (photoList.size() < 1) {
             holder.imgPhoto.setImageResource(R.mipmap.car_sample);
         } else {
-            String url = photoList.get(i);
-            x.image().bind(holder.imgPhoto, photoList.get(i), options);
+            //x.image().bind(holder.imgPhoto, photoList.get(i), options);
+            Picasso.with(mContext).load(photoList.get(i)).placeholder(R.mipmap.load_img_fail).into(holder.imgPhoto);
         }
         return convertView;
     }

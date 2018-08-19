@@ -56,7 +56,7 @@
                         android:id="@+id/order_detial_car_iv"
                         android:layout_width="110dp"
                         android:layout_height="87dp"
-                        android:src="@mipmap/car_sample"
+                        android:src="@mipmap/img_loading_list"
                         android:scaleType="fitXY"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="10dp"/>
@@ -179,6 +179,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="區域編號：未知"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_margin="5dp"
+                    android:padding="10dp"/>
+
+                <TextView
+                    android:id="@+id/order_detial_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="地        址：未知"
                     android:textSize="16sp"
                     android:textColor="@color/colorBlack"
                     android:layout_margin="5dp"

@@ -18,5 +18,5 @@ public class CHConfigtor {
     // 投手單次接單
     public final static String TOUSHOU_RECIEVER_ORDER_ONCE = "toushou/acceptOrder";
     // 完成單次訂單投幣
-    public final static String FINISH_INSERT_COINS_ORDER_ONCE = "toushou/finsh";
+    public final static String FINISH_INSERT_COINS_ORDER_ONCE = "toushou/finish";
 }

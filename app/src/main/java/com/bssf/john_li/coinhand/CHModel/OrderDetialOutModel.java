@@ -11,7 +11,7 @@ public class OrderDetialOutModel {
     /**
      * code : 200
      * msg :
-     * data : {"order":{"id":19,"userId":16,"orderNo":"U201710221223000520001","orderStatus":3,"orderType":4,"machineNo":"","carId":12,"startSlotTime":1506747553000,"totalAmount":40,"discountAmount":0,"payAmount":40,"couponId":null,"remark":"xxxxxxxxxxxxxxx","monthNum":0,"isDelete":0,"createTime":1508646181000,"updateTime":1524582993000,"updateTime0":null,"carType":1,"createTime0":null,"startSlotTime0":null,"pillarColor":"yellow","areaCode":"QT","parkingSpace":"","synTradeNo":null,"asynTradeNo":null,"img1":"objectName1","img2":"objectName2","img3":"objectName3","img4":"objectName4","img5":"objectName5","toushouAmount":0,"toushouUserId":null},"currentToubiAmount":4,"toushouRecordList":[{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000}]}
+     * data : {"order":{"id":367,"userId":16,"orderNo":"S201808031654296350001","orderStatus":3,"orderType":3,"machineNo":"4467","carId":30,"startSlotTime":1533293520000,"totalAmount":5,"discountAmount":0,"payAmount":5,"couponId":1,"remark":"","monthNum":0,"isDelete":0,"createTime":1533286469000,"updateTime":1533286483000,"updateTime0":1535710273000,"carType":1,"createTime0":1535710273000,"startSlotTime0":1535710273000,"pillarColor":"yellow","areaCode":"FST","parkingSpace":"","synTradeNo":"","asynTradeNo":"S201808031654296350001","img1":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg","img2":"","img3":"","img4":"","img5":"","toushouAmount":0,"toushouUserId":200},"currentToubiAmount":4,"toushouRecordList":[{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000},{"id":2,"orderNo":"U201710221222174430001","userId":22,"username":"测试22","amount":4,"status":1,"createTime":1524583082000,"finishTime":1524583082000}],"soltMachine":{"id":841,"machineNo":"4467","carType":1,"pillarColor":"yellow","longitude":113.533549,"latitude":22.1915088,"areaCode":"FST","address":"風順堂區","parkingSpaces":"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26","isDelete":0,"createTime":1535710273000,"updateTime":1535710273000,"updateTime0":1535710273000,"createTime0":1535710273000},"car":{"id":30,"userId":16,"imgUrl":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg","ifPerson":2,"carNo":"m65-86","modelForCar":"SUV","carBrand":"q5","carStyle":"q5","ifPay":0,"isDelete":0,"createTime":1535710273000,"updateTime":1535710273000,"expiryTime":1535710273000}}
      */
 
     private int code;
@@ -44,13 +44,17 @@ public class OrderDetialOutModel {
 
     public static class DataBean {
         /**
-         * order : {"id":19,"userId":16,"orderNo":"U201710221223000520001","orderStatus":3,"orderType":4,"machineNo":"","carId":12,"startSlotTime":1506747553000,"totalAmount":40,"discountAmount":0,"payAmount":40,"couponId":null,"remark":"xxxxxxxxxxxxxxx","monthNum":0,"isDelete":0,"createTime":1508646181000,"updateTime":1524582993000,"updateTime0":null,"carType":1,"createTime0":null,"startSlotTime0":null,"pillarColor":"yellow","areaCode":"QT","parkingSpace":"","synTradeNo":null,"asynTradeNo":null,"img1":"objectName1","img2":"objectName2","img3":"objectName3","img4":"objectName4","img5":"objectName5","toushouAmount":0,"toushouUserId":null}
+         * order : {"id":367,"userId":16,"orderNo":"S201808031654296350001","orderStatus":3,"orderType":3,"machineNo":"4467","carId":30,"startSlotTime":1533293520000,"totalAmount":5,"discountAmount":0,"payAmount":5,"couponId":1,"remark":"","monthNum":0,"isDelete":0,"createTime":1533286469000,"updateTime":1533286483000,"updateTime0":1535710273000,"carType":1,"createTime0":1535710273000,"startSlotTime0":1535710273000,"pillarColor":"yellow","areaCode":"FST","parkingSpace":"","synTradeNo":"","asynTradeNo":"S201808031654296350001","img1":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg","img2":"","img3":"","img4":"","img5":"","toushouAmount":0,"toushouUserId":200}
          * currentToubiAmount : 4
-         * toushouRecordList : [{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000}]
+         * toushouRecordList : [{"id":1,"orderNo":"U201710221222174430001","userId":11,"username":"test11","amount":4,"status":2,"createTime":1524583058000,"finishTime":1524583064000},{"id":2,"orderNo":"U201710221222174430001","userId":22,"username":"测试22","amount":4,"status":1,"createTime":1524583082000,"finishTime":1524583082000}]
+         * soltMachine : {"id":841,"machineNo":"4467","carType":1,"pillarColor":"yellow","longitude":113.533549,"latitude":22.1915088,"areaCode":"FST","address":"風順堂區","parkingSpaces":"1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26","isDelete":0,"createTime":1535710273000,"updateTime":1535710273000,"updateTime0":1535710273000,"createTime0":1535710273000}
+         * car : {"id":30,"userId":16,"imgUrl":"http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg","ifPerson":2,"carNo":"m65-86","modelForCar":"SUV","carBrand":"q5","carStyle":"q5","ifPay":0,"isDelete":0,"createTime":1535710273000,"updateTime":1535710273000,"expiryTime":1535710273000}
          */
 
         private OrderBean order;
         private int currentToubiAmount;
+        private SoltMachineBean soltMachine;
+        private CarBean car;
         private List<ToushouRecordListBean> toushouRecordList;
 
         public OrderBean getOrder() {
@@ -69,6 +73,22 @@ public class OrderDetialOutModel {
             this.currentToubiAmount = currentToubiAmount;
         }
 
+        public SoltMachineBean getSoltMachine() {
+            return soltMachine;
+        }
+
+        public void setSoltMachine(SoltMachineBean soltMachine) {
+            this.soltMachine = soltMachine;
+        }
+
+        public CarBean getCar() {
+            return car;
+        }
+
+        public void setCar(CarBean car) {
+            this.car = car;
+        }
+
         public List<ToushouRecordListBean> getToushouRecordList() {
             return toushouRecordList;
         }
@@ -79,39 +99,39 @@ public class OrderDetialOutModel {
 
         public static class OrderBean {
             /**
-             * id : 19
+             * id : 367
              * userId : 16
-             * orderNo : U201710221223000520001
+             * orderNo : S201808031654296350001
              * orderStatus : 3
-             * orderType : 4
-             * machineNo :
-             * carId : 12
-             * startSlotTime : 1506747553000
-             * totalAmount : 40
+             * orderType : 3
+             * machineNo : 4467
+             * carId : 30
+             * startSlotTime : 1533293520000
+             * totalAmount : 5
              * discountAmount : 0
-             * payAmount : 40
-             * couponId : null
-             * remark : xxxxxxxxxxxxxxx
+             * payAmount : 5
+             * couponId : 1
+             * remark :
              * monthNum : 0
              * isDelete : 0
-             * createTime : 1508646181000
-             * updateTime : 1524582993000
-             * updateTime0 : null
+             * createTime : 1533286469000
+             * updateTime : 1533286483000
+             * updateTime0 : 1535710273000
              * carType : 1
-             * createTime0 : null
-             * startSlotTime0 : null
+             * createTime0 : 1535710273000
+             * startSlotTime0 : 1535710273000
              * pillarColor : yellow
-             * areaCode : QT
+             * areaCode : FST
              * parkingSpace :
-             * synTradeNo : null
-             * asynTradeNo : null
-             * img1 : objectName1
-             * img2 : objectName2
-             * img3 : objectName3
-             * img4 : objectName4
-             * img5 : objectName5
+             * synTradeNo :
+             * asynTradeNo : S201808031654296350001
+             * img1 : http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg
+             * img2 :
+             * img3 :
+             * img4 :
+             * img5 :
              * toushouAmount : 0
-             * toushouUserId : null
+             * toushouUserId : 200
              */
 
             private int id;
@@ -125,28 +145,28 @@ public class OrderDetialOutModel {
             private int totalAmount;
             private int discountAmount;
             private int payAmount;
-            private Object couponId;
+            private int couponId;
             private String remark;
             private int monthNum;
             private int isDelete;
             private long createTime;
             private long updateTime;
-            private Object updateTime0;
+            private long updateTime0;
             private int carType;
-            private Object createTime0;
-            private Object startSlotTime0;
+            private long createTime0;
+            private long startSlotTime0;
             private String pillarColor;
             private String areaCode;
             private String parkingSpace;
-            private Object synTradeNo;
-            private Object asynTradeNo;
+            private String synTradeNo;
+            private String asynTradeNo;
             private String img1;
             private String img2;
             private String img3;
             private String img4;
             private String img5;
             private int toushouAmount;
-            private Object toushouUserId;
+            private int toushouUserId;
 
             public int getId() {
                 return id;
@@ -236,11 +256,11 @@ public class OrderDetialOutModel {
                 this.payAmount = payAmount;
             }
 
-            public Object getCouponId() {
+            public int getCouponId() {
                 return couponId;
             }
 
-            public void setCouponId(Object couponId) {
+            public void setCouponId(int couponId) {
                 this.couponId = couponId;
             }
 
@@ -284,11 +304,11 @@ public class OrderDetialOutModel {
                 this.updateTime = updateTime;
             }
 
-            public Object getUpdateTime0() {
+            public long getUpdateTime0() {
                 return updateTime0;
             }
 
-            public void setUpdateTime0(Object updateTime0) {
+            public void setUpdateTime0(long updateTime0) {
                 this.updateTime0 = updateTime0;
             }
 
@@ -300,19 +320,19 @@ public class OrderDetialOutModel {
                 this.carType = carType;
             }
 
-            public Object getCreateTime0() {
+            public long getCreateTime0() {
                 return createTime0;
             }
 
-            public void setCreateTime0(Object createTime0) {
+            public void setCreateTime0(long createTime0) {
                 this.createTime0 = createTime0;
             }
 
-            public Object getStartSlotTime0() {
+            public long getStartSlotTime0() {
                 return startSlotTime0;
             }
 
-            public void setStartSlotTime0(Object startSlotTime0) {
+            public void setStartSlotTime0(long startSlotTime0) {
                 this.startSlotTime0 = startSlotTime0;
             }
 
@@ -340,19 +360,19 @@ public class OrderDetialOutModel {
                 this.parkingSpace = parkingSpace;
             }
 
-            public Object getSynTradeNo() {
+            public String getSynTradeNo() {
                 return synTradeNo;
             }
 
-            public void setSynTradeNo(Object synTradeNo) {
+            public void setSynTradeNo(String synTradeNo) {
                 this.synTradeNo = synTradeNo;
             }
 
-            public Object getAsynTradeNo() {
+            public String getAsynTradeNo() {
                 return asynTradeNo;
             }
 
-            public void setAsynTradeNo(Object asynTradeNo) {
+            public void setAsynTradeNo(String asynTradeNo) {
                 this.asynTradeNo = asynTradeNo;
             }
 
@@ -404,12 +424,294 @@ public class OrderDetialOutModel {
                 this.toushouAmount = toushouAmount;
             }
 
-            public Object getToushouUserId() {
+            public int getToushouUserId() {
                 return toushouUserId;
             }
 
-            public void setToushouUserId(Object toushouUserId) {
+            public void setToushouUserId(int toushouUserId) {
                 this.toushouUserId = toushouUserId;
+            }
+        }
+
+        public static class SoltMachineBean {
+            /**
+             * id : 841
+             * machineNo : 4467
+             * carType : 1
+             * pillarColor : yellow
+             * longitude : 113.533549
+             * latitude : 22.1915088
+             * areaCode : FST
+             * address : 風順堂區
+             * parkingSpaces : 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26
+             * isDelete : 0
+             * createTime : 1535710273000
+             * updateTime : 1535710273000
+             * updateTime0 : 1535710273000
+             * createTime0 : 1535710273000
+             */
+
+            private int id;
+            private String machineNo;
+            private int carType;
+            private String pillarColor;
+            private double longitude;
+            private double latitude;
+            private String areaCode;
+            private String address;
+            private String parkingSpaces;
+            private int isDelete;
+            private long createTime;
+            private long updateTime;
+            private long updateTime0;
+            private long createTime0;
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public String getMachineNo() {
+                return machineNo;
+            }
+
+            public void setMachineNo(String machineNo) {
+                this.machineNo = machineNo;
+            }
+
+            public int getCarType() {
+                return carType;
+            }
+
+            public void setCarType(int carType) {
+                this.carType = carType;
+            }
+
+            public String getPillarColor() {
+                return pillarColor;
+            }
+
+            public void setPillarColor(String pillarColor) {
+                this.pillarColor = pillarColor;
+            }
+
+            public double getLongitude() {
+                return longitude;
+            }
+
+            public void setLongitude(double longitude) {
+                this.longitude = longitude;
+            }
+
+            public double getLatitude() {
+                return latitude;
+            }
+
+            public void setLatitude(double latitude) {
+                this.latitude = latitude;
+            }
+
+            public String getAreaCode() {
+                return areaCode;
+            }
+
+            public void setAreaCode(String areaCode) {
+                this.areaCode = areaCode;
+            }
+
+            public String getAddress() {
+                return address;
+            }
+
+            public void setAddress(String address) {
+                this.address = address;
+            }
+
+            public String getParkingSpaces() {
+                return parkingSpaces;
+            }
+
+            public void setParkingSpaces(String parkingSpaces) {
+                this.parkingSpaces = parkingSpaces;
+            }
+
+            public int getIsDelete() {
+                return isDelete;
+            }
+
+            public void setIsDelete(int isDelete) {
+                this.isDelete = isDelete;
+            }
+
+            public long getCreateTime() {
+                return createTime;
+            }
+
+            public void setCreateTime(long createTime) {
+                this.createTime = createTime;
+            }
+
+            public long getUpdateTime() {
+                return updateTime;
+            }
+
+            public void setUpdateTime(long updateTime) {
+                this.updateTime = updateTime;
+            }
+
+            public long getUpdateTime0() {
+                return updateTime0;
+            }
+
+            public void setUpdateTime0(long updateTime0) {
+                this.updateTime0 = updateTime0;
+            }
+
+            public long getCreateTime0() {
+                return createTime0;
+            }
+
+            public void setCreateTime0(long createTime0) {
+                this.createTime0 = createTime0;
+            }
+        }
+
+        public static class CarBean {
+            /**
+             * id : 30
+             * userId : 16
+             * imgUrl : http://test-pic-666.oss-cn-hongkong.aliyuncs.com/car20180309163702.jpg
+             * ifPerson : 2
+             * carNo : m65-86
+             * modelForCar : SUV
+             * carBrand : q5
+             * carStyle : q5
+             * ifPay : 0
+             * isDelete : 0
+             * createTime : 1535710273000
+             * updateTime : 1535710273000
+             * expiryTime : 1535710273000
+             */
+
+            private int id;
+            private int userId;
+            private String imgUrl;
+            private int ifPerson;
+            private String carNo;
+            private String modelForCar;
+            private String carBrand;
+            private String carStyle;
+            private int ifPay;
+            private int isDelete;
+            private long createTime;
+            private long updateTime;
+            private long expiryTime;
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+
+            public int getUserId() {
+                return userId;
+            }
+
+            public void setUserId(int userId) {
+                this.userId = userId;
+            }
+
+            public String getImgUrl() {
+                return imgUrl;
+            }
+
+            public void setImgUrl(String imgUrl) {
+                this.imgUrl = imgUrl;
+            }
+
+            public int getIfPerson() {
+                return ifPerson;
+            }
+
+            public void setIfPerson(int ifPerson) {
+                this.ifPerson = ifPerson;
+            }
+
+            public String getCarNo() {
+                return carNo;
+            }
+
+            public void setCarNo(String carNo) {
+                this.carNo = carNo;
+            }
+
+            public String getModelForCar() {
+                return modelForCar;
+            }
+
+            public void setModelForCar(String modelForCar) {
+                this.modelForCar = modelForCar;
+            }
+
+            public String getCarBrand() {
+                return carBrand;
+            }
+
+            public void setCarBrand(String carBrand) {
+                this.carBrand = carBrand;
+            }
+
+            public String getCarStyle() {
+                return carStyle;
+            }
+
+            public void setCarStyle(String carStyle) {
+                this.carStyle = carStyle;
+            }
+
+            public int getIfPay() {
+                return ifPay;
+            }
+
+            public void setIfPay(int ifPay) {
+                this.ifPay = ifPay;
+            }
+
+            public int getIsDelete() {
+                return isDelete;
+            }
+
+            public void setIsDelete(int isDelete) {
+                this.isDelete = isDelete;
+            }
+
+            public long getCreateTime() {
+                return createTime;
+            }
+
+            public void setCreateTime(long createTime) {
+                this.createTime = createTime;
+            }
+
+            public long getUpdateTime() {
+                return updateTime;
+            }
+
+            public void setUpdateTime(long updateTime) {
+                this.updateTime = updateTime;
+            }
+
+            public long getExpiryTime() {
+                return expiryTime;
+            }
+
+            public void setExpiryTime(long expiryTime) {
+                this.expiryTime = expiryTime;
             }
         }
 

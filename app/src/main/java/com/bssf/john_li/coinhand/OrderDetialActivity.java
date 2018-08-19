@@ -19,6 +19,7 @@ import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.CHView.NoScrollGridView;
 import com.bssf.john_li.coinhand.CHView.NoScrollListView;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -41,12 +42,14 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private NoScrollListView oparetionRecordLv;
     private NoScrollGridView order_img_gv;
     private ImageView carIv, backIv, submitIv, loadingIv;
-    private TextView orderNoTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
+    private TextView orderNoTv, addressTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
 
     private String orderNo;
+    private String mAddress;
     // 是否接單成功
     private boolean isReciverOrder = false;
     private OrderDetialOutModel.DataBean.OrderBean mOrderDetialModel;
+    private OrderDetialOutModel.DataBean.SoltMachineBean mSoltMachineBean;
     private int currentToubiAmount;
     private List<OrderDetialOutModel.DataBean.ToushouRecordListBean> mToushouRecordList;
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
@@ -68,6 +71,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         backIv = findViewById(R.id.order_detial_back);
         submitIv = findViewById(R.id.order_detial_submit);
         orderNoTv = findViewById(R.id.order_detial_orderno);
+        addressTv = findViewById(R.id.order_detial_address);
         carNoTv = findViewById(R.id.order_detial_carno);
         carTypeTv = findViewById(R.id.order_detial_cartype);
         startSlotTimeTv = findViewById(R.id.order_detial_start_slottime);
@@ -95,7 +99,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     public void initData() {
         Intent intent = getIntent();
         orderNo = intent.getStringExtra("orderNo");
-        orderNoTv.setText("訂單編號" + String.valueOf(orderNo));
+        orderNoTv.setText("訂單編號：" + String.valueOf(orderNo));
+        if (intent.getStringExtra("address") != null) {
+            mAddress = intent.getStringExtra("address");
+        }
         mToushouRecordList = new ArrayList<>();
         mOrderOperationRecordAdapter = new OrderOperationRecordAdapter(mToushouRecordList, this);
         oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
@@ -131,12 +138,13 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 if (model.getCode() == 200) {
                     Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情成功！", Toast.LENGTH_SHORT).show();
                     mOrderDetialModel = model.getData().getOrder();
+                    mSoltMachineBean = model.getData().getSoltMachine();
                     currentToubiAmount = model.getData().getCurrentToubiAmount();
                     mToushouRecordList = model.getData().getToushouRecordList();
                     refreshUI();
                     loadingLL.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                     orderDetialLoadFail();
                 }
             }
@@ -166,11 +174,15 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
      * 獲取訂單詳情成功刷新界面
      */
     private void refreshUI() {
-        x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
+        //x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
+        Picasso.with(this).load(mOrderDetialModel.getImg1()).placeholder(R.mipmap.load_img_fail).into(carIv);
+        if (mSoltMachineBean != null) {
+            addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
+        }
         moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
-        machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo());
+        machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo() + "：車位" + mOrderDetialModel.getParkingSpace());
         areaTv.setText("區域編號：" + mOrderDetialModel.getAreaCode());
         carNoTv.setText("車牌號碼：" + mOrderDetialModel.getCarId());
         switch (mOrderDetialModel.getCarType()) {
@@ -254,12 +266,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onSuccess(String result) {
                 OrderDetialOutModel model = new Gson().fromJson(result.toString(), OrderDetialOutModel.class);
-                if (model.getCode() == 0) {
+                if (model.getCode() == 200) {
                     isReciverOrder = true;
                     isRecieverTv.setVisibility(View.VISIBLE);
                     Toast.makeText(OrderDetialActivity.this, "接單成功！", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "接單失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "接單失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
@@ -308,12 +320,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onSuccess(String result) {
                 OrderDetialOutModel model = new Gson().fromJson(result.toString(), OrderDetialOutModel.class);
-                if (model.getCode() == 0) {
+                if (model.getCode() == 200) {
                     Toast.makeText(OrderDetialActivity.this, "本階段投幣成功！", Toast.LENGTH_SHORT).show();
                     EventBus.getDefault().post("FINISH_ORDER_ONCE");
                     finish();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
