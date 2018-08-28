@@ -59,28 +59,26 @@
                         android:src="@mipmap/img_loading_list"
                         android:scaleType="fitXY"
                         android:layout_gravity="center_vertical"
-                        android:layout_margin="10dp"/>
+                        android:layout_margin="10dp"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/order_detial_carno"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="車牌號碼：M6596"
                         android:textSize="16sp"
                         android:textColor="@color/colorBlack"
-                        android:layout_toRightOf="@id/order_detial_car_iv"
-                        android:layout_marginLeft="5dp"
-                        android:layout_centerVertical="true"/>
+                        android:layout_marginLeft="5dp"/>
 
                     <TextView
                         android:id="@+id/order_detial_cartype"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="車牌類型：私家車"
                         android:textSize="16sp"
                         android:textColor="@color/colorBlack"
-                        android:layout_toRightOf="@id/order_detial_car_iv"
-                        android:layout_below="@id/order_detial_carno"
+                        android:layout_alignParentRight="true"
                         android:layout_marginLeft="5dp"/>
                 </RelativeLayout>
 
@@ -229,23 +227,25 @@
             android:id="@+id/order_detial_loading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
             android:background="@color/colorWight"
+            android:gravity="center"
+            android:orientation="vertical"
             android:visibility="invisible">
+
             <ImageView
                 android:id="@+id/order_detial_load_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/img_loading_list"/>
+                android:src="@mipmap/img_loading_list" />
+
             <TextView
                 android:id="@+id/order_detial_load_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="加載中......"
-                android:textSize="20sp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:layout_marginTop="10dp"/>
+                android:text="加載中......"
+                android:textSize="20sp" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

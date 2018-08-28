@@ -6,7 +6,7 @@ package com.bssf.john_li.coinhand.CHUtils;
 
 public class CHConfigtor {
     // 測試的IP地址
-    public final static String BASE_URL = "http://47.75.5.50/parkingman-web/";
+    public final static String BASE_URL = "http://112.74.52.98/parkingman-web/";
     // 用戶登錄的API
     public final static String USER_LOGIN = "user/qishoulogin";
     // 獲取工作區域
