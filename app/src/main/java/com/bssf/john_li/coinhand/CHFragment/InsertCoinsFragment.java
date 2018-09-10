@@ -141,7 +141,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     private void setListener() {
-        loadLL.setOnClickListener(this);
+        loadLL.setOnClickListener(null);
         refreshIv.setOnClickListener(this);
         unknowMachaineIv.setOnClickListener(this);
     }
@@ -284,6 +284,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     private void loadMapFail() {
         loadLL.setVisibility(View.VISIBLE);
+        loadLL.setOnClickListener(this);
         //loadIv.setImageResource(R.mipmap.head_boy);
         loadIv.setVisibility(View.GONE);
         animationDrawable.stop();
@@ -348,6 +349,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 18));
                     loadLL.setVisibility(View.GONE);
+                    loadLL.setOnClickListener(null);
                     addressTv.setText(address);
                     // 刷新訂單列表
                     refreshOrderList();
