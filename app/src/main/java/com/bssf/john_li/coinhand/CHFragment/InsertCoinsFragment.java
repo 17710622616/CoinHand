@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
 import com.bssf.john_li.coinhand.CHAdapter.PopUnKnowOrderListAdapter;
+import com.bssf.john_li.coinhand.CHModel.CheckUnfinishModel;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
@@ -518,6 +519,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         }
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F));
+
+        checkHasUnfinishOrder();
     }
 
     /**
@@ -548,7 +551,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrder().getOrderNo());
-                intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
+                intent.putExtra("isReciverOrder", "false");
+                //intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -584,6 +588,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderMachineUnknowList.get(position).getOrder().getOrderNo());
+                intent.putExtra("isReciverOrder", "false");
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -607,6 +612,63 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             }
         }
         return list;
+    }
+
+    /**
+     * 檢查是否有未完成的訂單
+     */
+    private void checkHasUnfinishOrder() {
+        final ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setTitle("系統");
+        dialog.setMessage("檢測是否有接嘅單......");
+        dialog.setCancelable(false);
+        dialog.show();
+        RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.CHECK_UNFINISH);
+        params.setAsJsonContent(true);
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("qstoken",SPUtils.get(getActivity(), "qsUserToken", ""));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String urlJson = jsonObj.toString();
+        params.setBodyContent(urlJson);
+        String uri = params.getUri();
+        params.setConnectTimeout(30 * 1000);
+        x.http().request(HttpMethod.POST ,params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                CheckUnfinishModel model = new Gson().fromJson(result.toString(), CheckUnfinishModel.class);
+                if (model.getCode() == 200) {
+                    Toast.makeText(getActivity(), "您暫無未完成訂單！", Toast.LENGTH_SHORT).show();
+                } else if (model.getCode() == 70008){
+                    Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
+                    intent.putExtra("orderNo", model.getData().getOrderNo());
+                    intent.putExtra("isReciverOrder", "true");
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "您有未完成訂單！請完成先", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取未完成訂單失敗！請重新提交" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
+                }
+            }
+            //请求异常后的回调方法
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if (ex instanceof java.net.SocketTimeoutException) {
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取投幣手工作區域失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //主动调用取消请求的回调方法
+            @Override
+            public void onCancelled(CancelledException cex) {
+            }
+            @Override
+            public void onFinished() {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Subscribe

@@ -1,10 +1,16 @@
 package com.bssf.john_li.coinhand;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,7 +51,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private TextView orderNoTv, addressTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
 
     private String orderNo;
-    private String mAddress;
+    //private String mAddress;
     // 是否接單成功
     private boolean isReciverOrder = false;
     private OrderDetialOutModel.DataBean.OrderBean mOrderDetialModel;
@@ -100,9 +106,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         Intent intent = getIntent();
         orderNo = intent.getStringExtra("orderNo");
         orderNoTv.setText("訂單編號：" + String.valueOf(orderNo));
-        if (intent.getStringExtra("address") != null) {
-            mAddress = intent.getStringExtra("address");
+        if (intent.getStringExtra("isReciverOrder").equals("true")) {
+            backIv.setVisibility(View.GONE);
         }
+        /*if (intent.getStringExtra("address") != null) {
+            mAddress = intent.getStringExtra("address");
+        }*/
         mToushouRecordList = new ArrayList<>();
         mOrderOperationRecordAdapter = new OrderOperationRecordAdapter(mToushouRecordList, this);
         oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
@@ -222,6 +231,19 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isReciverOrder) {
+                Toast.makeText(this, "您尚未未完成此訂單，請先完成后退出！", Toast.LENGTH_LONG).show();
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.order_detial_back:    // 返回
@@ -229,7 +251,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.order_detial_submit:  // 提交單次投幣完成
                 if (true) { //isReciverOrder
-                    callNetSubmitInsertCoinOnce();
+                    showOrderAmountDialog();
                 } else {
                     Toast.makeText(this, "您尚未提交接單操作，請先接單！", Toast.LENGTH_LONG).show();
                 }
@@ -269,6 +291,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 if (model.getCode() == 200) {
                     isReciverOrder = true;
                     isRecieverTv.setVisibility(View.VISIBLE);
+                    backIv.setVisibility(View.GONE);
                     Toast.makeText(OrderDetialActivity.this, "接單成功！", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(OrderDetialActivity.this, "接單失敗！" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
@@ -295,9 +318,41 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     }
 
     /**
-     * 完成當次投幣
+     * 顯示填寫金額的dialog
      */
-    private void callNetSubmitInsertCoinOnce() {
+    private void showOrderAmountDialog() {
+        View view = null;
+        AlertDialog.Builder changeUserDialog = new AlertDialog.Builder(this);
+        changeUserDialog.setTitle("請填寫投幣金額，不超過MOP" + String.valueOf(currentToubiAmount));
+        view = LayoutInflater.from(this).inflate(R.layout.dialog_order_amount_insert, null);
+        changeUserDialog.setView(view);
+        Dialog d = changeUserDialog.create();
+        // 初始化dialog中的控件
+        final EditText amountEt = view.findViewById(R.id.dialog_order_amount_et);
+        Button amountSubmit = view.findViewById(R.id.dialog_order_amount_submit);
+        amountSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    double amountSubmit = Double.parseDouble(amountEt.getText().toString());
+                    if (0 < amountSubmit && amountSubmit <= (double)currentToubiAmount) {
+                        callNetSubmitInsertCoinOnce(amountSubmit);
+                    } else {
+                        Toast.makeText(OrderDetialActivity.this, "請填寫正確金額！", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(OrderDetialActivity.this, "請填寫正確金額！", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        d.show();
+    }
+
+    /**
+     * 完成當次投幣
+     * @param amountSubmit
+     */
+    private void callNetSubmitInsertCoinOnce(double amountSubmit) {
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setTitle("系統");
         dialog.setMessage("正在接單中......");
@@ -309,6 +364,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         try {
             jsonObj.put("qstoken", SPUtils.get(this, "qsUserToken", ""));
             jsonObj.put("orderNo", orderNo);
+            jsonObj.put("amount", String.valueOf(amountSubmit));
         } catch (JSONException e) {
             e.printStackTrace();
         }

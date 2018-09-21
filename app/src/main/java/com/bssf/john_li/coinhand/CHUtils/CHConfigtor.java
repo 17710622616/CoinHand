@@ -11,6 +11,8 @@ public class CHConfigtor {
     public final static String USER_LOGIN = "user/qishoulogin";
     // 獲取工作區域
     public final static String WORK_AREA = "toushou/getAreaList";
+    // 獲取工作區域
+    public final static String CHECK_UNFINISH = "toushou/checkUnfinished";
     // 獲取該區域內的訂單
     public final static String GET_ORDER_LIST = "toushou/getOrderList";
     // 獲取訂單詳情
