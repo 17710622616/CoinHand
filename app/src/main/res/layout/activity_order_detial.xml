@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:padding="10dp"
-                    android:text="建議投幣金額：未知"
+                    android:text="訂單未投金額：未知"
                     android:textColor="@color/colorBlack"
                     android:textSize="16sp" />
 

@@ -188,7 +188,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         if (mSoltMachineBean != null) {
             addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
         }
-        moneyEverytimeTv.setText("每次投幣金額：" + String.valueOf(currentToubiAmount));
+        moneyEverytimeTv.setText("訂單未投金額：" + String.valueOf(currentToubiAmount));
         startSlotTimeTv.setText("開始投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo() + "：車位" + mOrderDetialModel.getParkingSpace());
