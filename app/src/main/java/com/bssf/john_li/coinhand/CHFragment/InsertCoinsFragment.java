@@ -152,6 +152,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         animationDrawable = (AnimationDrawable) loadIv.getBackground();
         animationDrawable.start();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        orderList = new ArrayList<>();
+        orderMachineUnknowList = new ArrayList<>();
+        orderMaachineKnownList = new ArrayList<>();
     }
 
     @Override
@@ -411,7 +414,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      */
     private void refreshOrderList() {
         if (mGoogleMap != null) {
-            // 模擬加數據
             loadOrderList();
         } else {
             Toast.makeText(getActivity(), "定位信息有誤，請重新定位！", Toast.LENGTH_SHORT);
@@ -422,15 +424,13 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * 請求訂單列表
      */
     private void loadOrderList() {
-        Log.d("MAPLOGS", "InsertloadOrderList");
-        orderList = new ArrayList<>();
-        orderMachineUnknowList = new ArrayList<>();
-        orderMaachineKnownList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setTitle("系統");
         dialog.setMessage("正在獲取最新訂單列表中......");
         dialog.setCancelable(false);
         dialog.show();
+        orderMachineUnknowList.clear();
+        orderMaachineKnownList.clear();
         RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.GET_ORDER_LIST);
         params.setAsJsonContent(true);
         JSONObject jsonObj = new JSONObject();
