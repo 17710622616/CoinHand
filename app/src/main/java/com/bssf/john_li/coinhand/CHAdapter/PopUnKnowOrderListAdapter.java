@@ -63,7 +63,7 @@ public class PopUnKnowOrderListAdapter extends BaseAdapter {
         }
         holder.item_pop_order_no.setText("訂單編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
         holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarNO()));
-        holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getOrder().getCarId()));
+        //holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getOrder().getCarId()));
         holder.item_pop_order_next_time.setText(CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));
         holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getOrder().getRemark()));
         long timeDiff = CHCommonUtils.compareTimestamps(list.get(position).getOrder().getStartSlotTime());

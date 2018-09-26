@@ -47,7 +47,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private LinearLayout loadingLL;
     private NoScrollListView oparetionRecordLv;
     private NoScrollGridView order_img_gv;
-    private ImageView carIv, backIv, submitIv, loadingIv;
+    private ImageView backIv, submitIv, loadingIv;
     private TextView orderNoTv, addressTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
 
     private String orderNo;
@@ -56,6 +56,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private boolean isReciverOrder = false;
     private OrderDetialOutModel.DataBean.OrderBean mOrderDetialModel;
     private OrderDetialOutModel.DataBean.SoltMachineBean mSoltMachineBean;
+    private OrderDetialOutModel.DataBean.CarBean mCarBean;
     private int currentToubiAmount;
     private List<OrderDetialOutModel.DataBean.ToushouRecordListBean> mToushouRecordList;
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
@@ -73,7 +74,6 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void initView() {
-        carIv = findViewById(R.id.order_detial_car_iv);
         backIv = findViewById(R.id.order_detial_back);
         submitIv = findViewById(R.id.order_detial_submit);
         orderNoTv = findViewById(R.id.order_detial_orderno);
@@ -108,6 +108,8 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         orderNoTv.setText("訂單編號：" + String.valueOf(orderNo));
         if (intent.getStringExtra("isReciverOrder").equals("true")) {
             backIv.setVisibility(View.GONE);
+            isReciverOrder = true;
+            isRecieverTv.setVisibility(View.VISIBLE);
         }
         /*if (intent.getStringExtra("address") != null) {
             mAddress = intent.getStringExtra("address");
@@ -148,6 +150,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                     Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情成功！", Toast.LENGTH_SHORT).show();
                     mOrderDetialModel = model.getData().getOrder();
                     mSoltMachineBean = model.getData().getSoltMachine();
+                    mCarBean = model.getData().getCar();
                     currentToubiAmount = model.getData().getCurrentToubiAmount();
                     mToushouRecordList = model.getData().getToushouRecordList();
                     refreshUI();
@@ -183,8 +186,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
      * 獲取訂單詳情成功刷新界面
      */
     private void refreshUI() {
-        //x.image().bind(carIv, mOrderDetialModel.getImg1(), options);
-        Picasso.with(this).load(mOrderDetialModel.getImg1()).placeholder(R.mipmap.load_img_fail).into(carIv);
+        if (mCarBean != null) {
+            carNoTv.setText("車牌號碼：" + mCarBean.getCarNo());
+        }
         if (mSoltMachineBean != null) {
             addressTv.setText("地        址：" + mSoltMachineBean.getAddress());
         }
@@ -193,7 +197,6 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         nextSlottimeTv.setText("下次投幣時間：" + CHCommonUtils.stampToDate(String.valueOf(mOrderDetialModel.getStartSlotTime())));
         machineNoTv.setText("咪錶編號：" + mOrderDetialModel.getMachineNo() + "：車位" + mOrderDetialModel.getParkingSpace());
         areaTv.setText("區域編號：" + mOrderDetialModel.getAreaCode());
-        carNoTv.setText("車牌號碼：" + mOrderDetialModel.getCarId());
         switch (mOrderDetialModel.getCarType()) {
             case 1:
                 carTypeTv.setText("車輛類型：輕重型摩托車");
@@ -257,7 +260,11 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 }
                 break;
             case R.id.order_detial_receiver_tv:  // 提交單次投幣接單操作
-                callNetReciverOrderOnce();
+                if (isReciverOrder == false) {
+                    callNetReciverOrderOnce();
+                } else {
+                    Toast.makeText(this, "您已接過此單，請唔重複接單！", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
@@ -355,7 +362,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private void callNetSubmitInsertCoinOnce(double amountSubmit) {
         final ProgressDialog dialog = new ProgressDialog(this);
         dialog.setTitle("系統");
-        dialog.setMessage("正在接單中......");
+        dialog.setMessage("正在完成訂單中......");
         dialog.setCancelable(false);
         dialog.show();
         RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.FINISH_INSERT_COINS_ORDER_ONCE);

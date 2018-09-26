@@ -55,16 +55,6 @@
                     android:layout_margin="5dp"
                     android:background="@color/colorWight">
 
-                    <ImageView
-                        android:id="@+id/order_detial_car_iv"
-                        android:layout_width="110dp"
-                        android:layout_height="87dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_margin="10dp"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/img_loading_list"
-                        android:visibility="gone" />
-
                     <TextView
                         android:id="@+id/order_detial_carno"
                         android:layout_width="wrap_content"

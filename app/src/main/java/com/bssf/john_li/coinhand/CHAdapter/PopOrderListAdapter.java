@@ -66,7 +66,7 @@ public class PopOrderListAdapter extends BaseAdapter {
         }
         holder.item_pop_order_no.setText("編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
         holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarNO()));
-        holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getSoltMachine().getMachineNo()) + list.get(position).getOrder().getParkingSpace());
+        holder.item_pop_car_port.setText("咪錶號碼：" + String.valueOf(list.get(position).getSoltMachine().getMachineNo()) + "車位：" + list.get(position).getOrder().getParkingSpace());
         holder.item_pop_order_next_time.setText(CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));
         if (list.get(position).getOrder().getRemark() == null) {
             holder.item_pop_order_remark.setText("备注：無");
