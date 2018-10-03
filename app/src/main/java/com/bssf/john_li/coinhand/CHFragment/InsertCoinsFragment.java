@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,7 +37,9 @@ import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
+import com.bssf.john_li.coinhand.CHUtils.DirectionsJSONParser;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
+import com.bssf.john_li.coinhand.CHUtils.ValComparator;
 import com.bssf.john_li.coinhand.OrderDetialActivity;
 import com.bssf.john_li.coinhand.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -54,7 +57,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,7 +71,10 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -104,6 +113,62 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private int totalCount = 0;
 
     private static final int REQUESTCODE = 6001;
+    // 路线
+    private String mapurl;
+    Handler mHandler2 = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String s1 = (String) msg.obj;
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(s1);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+
+                // Starts parsing data
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ArrayList<LatLng> points = null;
+            PolylineOptions lineOptions = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Traversing through all the routes
+            for (int i = 0; i < routes.size(); i++) {
+                points = new ArrayList<LatLng>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = routes.get(i);
+
+                // Fetching all the points in i-th route
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(20);
+
+                // Changing the color polyline according to the mode
+                lineOptions.color(Color.YELLOW);
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if (lineOptions != null) {
+                mGoogleMap.addPolyline(lineOptions);
+            }
+        }
+    };
 
     public static InsertCoinsFragment newInstance(){
         return new InsertCoinsFragment();
@@ -481,6 +546,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private void refreshNewMarkerList() {
         // 清空之前的marker
         mGoogleMap.clear();
+        List<OrderListOutModel.DataBean> orderUrgencyList = new ArrayList<>();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
             if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
@@ -517,10 +583,60 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 }
             }
         }
+
+        // 按时间的快慢排序list
+        Collections.sort(orderMaachineKnownList, new ValComparator());
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+
+        // 增加路线
+        mapurl = CHCommonUtils.getDirectionsUrl(new LatLng(39.99709957757345, 116.31184045225382), new LatLng(39.949158391497214, 116.4154639095068));
+        if (orderMaachineKnownList.size() > 0) {
+            /*polylineOptions.add(new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
+            polylineOptions.add(new LatLng(orderMaachineKnownList.get(1).getSoltMachine().getLatitude(), orderMaachineKnownList.get(1).getSoltMachine().getLongitude()));
+            polylineOptions.add(new LatLng(orderMaachineKnownList.get(2).getSoltMachine().getLatitude(), orderMaachineKnownList.get(2).getSoltMachine().getLongitude()));
+            polylineOptions.add(new LatLng(orderMaachineKnownList.get(3).getSoltMachine().getLatitude(), orderMaachineKnownList.get(3).getSoltMachine().getLongitude()));
+            polylineOptions.add(new LatLng(orderMaachineKnownList.get(4).getSoltMachine().getLatitude(), orderMaachineKnownList.get(4).getSoltMachine().getLongitude()));*/
+            mapurl = CHCommonUtils.getDirectionsUrl(latLng, new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
+        } else {
+            /*for (int i = 0; i < orderMaachineKnownList.size(); i++) {
+                polylineOptions.add(new LatLng(orderMaachineKnownList.get(i).getSoltMachine().getLatitude(), orderMaachineKnownList.get(i).getSoltMachine().getLongitude()));
+            }*/
+        }
+
+        // 請求獲取路線
+        request();
+
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F));
 
         checkHasUnfinishOrder();
+    }
+
+    private void request() {
+        RequestParams params = new RequestParams(mapurl);
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                String s1 = result.toString();
+                Message message = new Message();
+                message.obj = s1;
+                mHandler2.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(getApplicationContext(), "路線獲取失敗！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     /**
