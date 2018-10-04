@@ -115,6 +115,10 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private static final int REQUESTCODE = 6001;
     // 路线
     private String mapurl;
+
+    private Polyline polylineFinal;
+    PolylineOptions lineOptions = null;
+
     Handler mHandler2 = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -133,7 +137,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 e.printStackTrace();
             }
             ArrayList<LatLng> points = null;
-            PolylineOptions lineOptions = null;
             MarkerOptions markerOptions = new MarkerOptions();
 
             // Traversing through all the routes
@@ -157,15 +160,18 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(20);
+                lineOptions.width(10);
 
                 // Changing the color polyline according to the mode
-                lineOptions.color(Color.YELLOW);
+                lineOptions.color(getResources().getColor(R.color.base_color));
             }
 
             // Drawing polyline in the Google Map for the i-th route
             if (lineOptions != null) {
-                mGoogleMap.addPolyline(lineOptions);
+                if (polylineFinal != null) {
+                    polylineFinal.remove();
+                }
+                polylineFinal = mGoogleMap.addPolyline(lineOptions);
             }
         }
     };
@@ -285,6 +291,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
+                    getGoogleMapLine((String)marker.getTag());
                     showOrderListPop((String)marker.getTag());
                     return false;
                 }
@@ -589,25 +596,15 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
         // 增加路线
-        mapurl = CHCommonUtils.getDirectionsUrl(new LatLng(39.99709957757345, 116.31184045225382), new LatLng(39.949158391497214, 116.4154639095068));
         if (orderMaachineKnownList.size() > 0) {
-            /*polylineOptions.add(new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
-            polylineOptions.add(new LatLng(orderMaachineKnownList.get(1).getSoltMachine().getLatitude(), orderMaachineKnownList.get(1).getSoltMachine().getLongitude()));
-            polylineOptions.add(new LatLng(orderMaachineKnownList.get(2).getSoltMachine().getLatitude(), orderMaachineKnownList.get(2).getSoltMachine().getLongitude()));
-            polylineOptions.add(new LatLng(orderMaachineKnownList.get(3).getSoltMachine().getLatitude(), orderMaachineKnownList.get(3).getSoltMachine().getLongitude()));
-            polylineOptions.add(new LatLng(orderMaachineKnownList.get(4).getSoltMachine().getLatitude(), orderMaachineKnownList.get(4).getSoltMachine().getLongitude()));*/
-            mapurl = CHCommonUtils.getDirectionsUrl(latLng, new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
-        } else {
-            /*for (int i = 0; i < orderMaachineKnownList.size(); i++) {
-                polylineOptions.add(new LatLng(orderMaachineKnownList.get(i).getSoltMachine().getLatitude(), orderMaachineKnownList.get(i).getSoltMachine().getLongitude()));
-            }*/
+            // 拼接googlemap路线请求地址
+            mapurl = CHCommonUtils.getDirectionsUrl(getActivity(), latLng, new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
+            // 請求獲取路線
+            request();
         }
 
-        // 請求獲取路線
-        request();
-
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F));
-
+        // 加载完成地图及图钉检查是否有未完成订单
         checkHasUnfinishOrder();
     }
 
@@ -640,6 +637,25 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     /**
+     * 获取路线
+     * @param tag
+     */
+    private void getGoogleMapLine(String tag) {
+        double latitude = 0.0;
+        double longitude = 0.0;
+        for (int i = 0; i < orderMaachineKnownList.size(); i++) {
+            if (orderMaachineKnownList.get(i).getSoltMachine().getMachineNo().equals(tag)) {
+                latitude = orderMaachineKnownList.get(i).getSoltMachine().getLatitude();
+                longitude = orderMaachineKnownList.get(i).getSoltMachine().getLongitude();
+                break;
+            }
+        }
+        mapurl = CHCommonUtils.getDirectionsUrl(getActivity(), latLng, new LatLng(latitude, longitude));
+        // 請求獲取路線
+        request();
+    }
+
+    /**
      * 點擊地圖上的marker，打開對應咪錶的訂單列表的視窗
      * @param machineNo
      */
@@ -648,6 +664,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_order_list, null);
         final PopupWindow mPopWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, 1000, true);
         mPopWindow.setContentView(contentView);
+        mPopWindow.setFocusable(false);
+        mPopWindow.setOutsideTouchable(false);
         //设置各个控件的点击响应
         TextView machineTv = contentView.findViewById(R.id.pop_macheine_address);
         ImageView cancleIv = contentView.findViewById(R.id.pop_cancle);

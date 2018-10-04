@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import com.bssf.john_li.coinhand.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
@@ -706,7 +707,7 @@ public class CHCommonUtils {
      * @param dest
      * @return
      */
-    public static String getDirectionsUrl(LatLng origin, LatLng dest) {
+    public static String getDirectionsUrl(Context context, LatLng origin, LatLng dest) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + ","
                 + origin.longitude;
@@ -718,14 +719,14 @@ public class CHCommonUtils {
         String sensor = "sensor=false";
 
         // Travelling Mode
-        String mode = "mode=driving";
+        String mode = "mode=transit";
 
         //waypoints,116.32885,40.036675
         String waypointLatLng = "waypoints=" + "40.036675" + "," + "116.32885";
 
         // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + sensor + "&"
-                + mode + "&" + waypointLatLng;
+                + mode + "&key=" + context.getString(R.string.google_maps_key);
 
         // Output format
         String output = "json";

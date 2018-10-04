@@ -3,27 +3,60 @@ package com.bssf.john_li.coinhand;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.OrderOperationRecordAdapter;
 import com.bssf.john_li.coinhand.CHAdapter.PhotoAdapter;
+import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
+import com.bssf.john_li.coinhand.CHFragment.InsertCoinsFragment;
 import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
+import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
 import com.bssf.john_li.coinhand.CHView.NoScrollGridView;
+import com.bssf.john_li.coinhand.CHView.NoScrollLinearLayout;
 import com.bssf.john_li.coinhand.CHView.NoScrollListView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -38,14 +71,29 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by John_Li on 8/5/2018.
  */
 
-public class OrderDetialActivity extends BaseActivity implements View.OnClickListener {
+public class OrderDetialActivity extends BaseActivity implements View.OnClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private LinearLayout loadingLL;
-    private NoScrollListView oparetionRecordLv;
+    private ScrollView mScrollView;
+
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private LatLng latLng;
+    private GoogleMap mGoogleMap;
+    private SupportMapFragment mMapFragment;
+    private Marker mCurrLocation;
+    private LocationManager mLocationManager;
+    private Location mLastLocation = null;
+    private static final int REQUESTCODE = 6001;
+    private NoScrollLinearLayout mNoScrollLinearLayout;
+    // 投手记录列表
+    //private NoScrollListView oparetionRecordLv;
     private NoScrollGridView order_img_gv;
     private ImageView backIv, submitIv, loadingIv;
     private TextView orderNoTv, addressTv, carNoTv, carTypeTv, startSlotTimeTv, moneyEverytimeTv, nextSlottimeTv, receiverOrderTv, machineNoTv, areaTv, isRecieverTv, loadingTv;
@@ -74,6 +122,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void initView() {
+        mScrollView = findViewById(R.id.order_detial_sv);
         backIv = findViewById(R.id.order_detial_back);
         submitIv = findViewById(R.id.order_detial_submit);
         orderNoTv = findViewById(R.id.order_detial_orderno);
@@ -90,8 +139,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         loadingIv = findViewById(R.id.order_detial_load_iv);
         loadingTv = findViewById(R.id.order_detial_load_tv);
         loadingLL = findViewById(R.id.order_detial_loading);
-        oparetionRecordLv = findViewById(R.id.order_detial_lv);
+        //oparetionRecordLv = findViewById(R.id.order_detial_lv);
         order_img_gv = findViewById(R.id.order_img_gv);
+        mNoScrollLinearLayout = findViewById(R.id.order_detial_map_view_ll);
+        mNoScrollLinearLayout.setScrollView(mScrollView);
     }
 
     @Override
@@ -116,11 +167,12 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         }*/
         mToushouRecordList = new ArrayList<>();
         mOrderOperationRecordAdapter = new OrderOperationRecordAdapter(mToushouRecordList, this);
-        oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
+        //oparetionRecordLv.setAdapter(mOrderOperationRecordAdapter);
         mPhotoList = new ArrayList<>();
         mPhotoAdapter = new PhotoAdapter(this, mPhotoList);
         order_img_gv.setAdapter(mPhotoAdapter);
         callNetGetOredrDetial();
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
     private void callNetGetOredrDetial() {
@@ -409,5 +461,193 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+        if (mGoogleMap != null) {
+            // 允许获取我的位置
+            try {
+                mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
+                mGoogleMap.setMyLocationEnabled(true);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+
+            // 定位按鈕觸發事件：重新定位
+            mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    //onConnected(null);
+                    if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        if (mGoogleMap != null) {
+                            mGoogleMap.clear();
+                        }
+                        onMapReady(mGoogleMap);
+                    } else {
+                        Toast.makeText(OrderDetialActivity.this, "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                }
+            });
+        }
+    }
+
+    protected synchronized void buildGoogleApiClient() {//4
+        Log.d("MAPLOGS", "InsertbuildGoogleApiClient");
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.d("MAPLOGS", "InsertonConnected");
+        boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (isGPSEnabled || isNetworkEnabled) {
+            if (!isGPSEnabled) {
+                Toast.makeText(OrderDetialActivity.this, "定位之前請打開GPS！", Toast.LENGTH_SHORT).show();
+                loadMapFail();
+            }
+
+            if (!isNetworkEnabled) {
+                Toast.makeText(OrderDetialActivity.this, "定位之前請打開網絡！", Toast.LENGTH_SHORT).show();
+                loadMapFail();
+            }
+        } else {
+            Toast.makeText(OrderDetialActivity.this, "定位之前請打開GPS及網絡！", Toast.LENGTH_SHORT).show();
+            loadMapFail();
+        }
+
+        if (isGPSEnabled && isNetworkEnabled){
+            mTimer = new Timer();
+            mTimer.schedule(new WaitTask(), 1000, 3000);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        loadMapFail();
+    }
+
+    private void loadMapFail() {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d("MAPLOGS", "onRequestPermissionsResult");
+        switch (requestCode) {
+            case REQUESTCODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    buildGoogleApiClient();
+                    mGoogleApiClient.connect();
+                } else {
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * 等待線程，讓主線程等待子線程，每隔一秒拿一次，直至拿到，最多拿五次
+     */
+    public class WaitTask extends TimerTask {
+        int times = 5;
+        @Override
+        public void run() {
+            Message msg = new Message();
+            if (times > 0 && mLastLocation == null) {   // 请求次数在五次内，且没获取到定位坐标
+                try {
+                    mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+                times--;
+            } else {
+                if (mLastLocation != null){     // 获取到定位坐标
+                    msg.what = 1;
+                    mHandler.sendMessage(msg);
+                } else {    // 获取次数已经超过五次，且没获取到，判定获取失败
+                    msg.what = 2;
+                    mHandler.sendMessage(msg);
+                }
+                mTimer.cancel();
+            }
+        }
+    }
+
+    private Timer mTimer;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    mGoogleMap.clear();
+                    latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12));
+                    mLocationRequest = LocationRequest.create();
+                    mLocationRequest.setInterval(5000); //5 seconds
+                    mLocationRequest.setFastestInterval(3000); //3 seconds
+                    mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                    //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
+                    // 刷新訂單列表
+                    refreshMap();
+
+                    //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    if (mGoogleApiClient.isConnected()) {
+                        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, new LocationCallback() {
+                            @Override
+                            public void onLocationResult(LocationResult locationResult) {
+                                super.onLocationResult(locationResult);
+                            }
+                        });
+                    }
+                    break;
+                case 2:
+                    loadMapFail();
+                    break;
+            }
+        }
+    };
+
+    private void refreshMap() {
+        if (mSoltMachineBean != null) {
+            MarkerOptions options = new MarkerOptions().position(new LatLng(mSoltMachineBean.getLatitude(), mSoltMachineBean.getLongitude()));
+            options.title("地址:" + String.valueOf(mSoltMachineBean.getAddress()));
+            long timeDiff = CHCommonUtils.compareTimestamps(mOrderDetialModel.getStartSlotTime());
+            if (timeDiff > -30) {
+                options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin));
+            } else if (timeDiff > -60){
+                options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_y));
+            } else {
+                options.icon(BitmapDescriptorFactory.fromResource(R.mipmap.drawing_pin_g));
+            }
+            Marker marker = mGoogleMap.addMarker(options);
+        }
     }
 }

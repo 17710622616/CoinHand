@@ -41,6 +41,7 @@
         android:layout_height="match_parent">
 
         <ScrollView
+            android:id="@+id/order_detial_sv"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -198,10 +199,22 @@
                     android:textColor="@color/colorWight"
                     android:textSize="20sp" />
 
-                <com.bssf.john_li.coinhand.CHView.NoScrollListView
+                <!--<com.bssf.john_li.coinhand.CHView.NoScrollListView
                     android:id="@+id/order_detial_lv"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent" />-->
+                <com.bssf.john_li.coinhand.CHView.NoScrollLinearLayout
+                    android:id="@+id/order_detial_map_view_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="500dp">
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/order_detial_map_view"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:context="com.cocacola.john_li.googlemaptest.OrderDetialActivity" />
+                </com.bssf.john_li.coinhand.CHView.NoScrollLinearLayout>
             </LinearLayout>
         </ScrollView>
 
