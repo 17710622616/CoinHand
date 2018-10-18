@@ -3,6 +3,8 @@ package com.bssf.john_li.coinhand;
 import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
+import com.bssf.john_li.coinhand.CHUtils.CrashHandler;
+
 import org.greenrobot.eventbus.EventBus;
 import org.xutils.x;
 
@@ -15,5 +17,6 @@ public class CHApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         x.Ext.init(this);
+        CrashHandler.getInstance().init(this);
     }
 }
