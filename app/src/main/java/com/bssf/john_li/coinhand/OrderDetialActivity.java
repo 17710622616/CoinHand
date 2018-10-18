@@ -143,6 +143,21 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
         order_img_gv = findViewById(R.id.order_img_gv);
         mNoScrollLinearLayout = findViewById(R.id.order_detial_map_view_ll);
         mNoScrollLinearLayout.setScrollView(mScrollView);
+
+        mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.order_detial_map_view);
+        mMapFragment.getMapAsync(this);
+        View mapView = mMapFragment.getView();
+        // 調整按鈕位置
+        if (mapView != null && mapView.findViewById(1) != null) {
+            // Get the button view
+            View locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);
+            // and next place it, on bottom right (as Google Maps app)
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+            // position on right bottom
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+            layoutParams.setMargins(0, 120, 30, 0);
+        }
     }
 
     @Override
