@@ -29,12 +29,11 @@
             android:textSize="20sp"/>
 
         <ImageView
-            android:id="@+id/all_sm_refresh"
+            android:id="@+id/all_sm_search"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/refresh"
-            android:visibility="invisible"/>
+            android:src="@mipmap/refresh"/>
     </LinearLayout>
 
     <FrameLayout

@@ -1,5 +1,6 @@
 package com.bssf.john_li.coinhand;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
@@ -15,6 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -59,7 +62,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
     private ImageView loadIv;
     private ImageView unknowMachaineIv;
     private ImageView loadFailIv;
-    private ImageView refreshIv;
+    private ImageView searchIv;
     private TextView loadTv, addressTv;
 
     private AnimationDrawable animationDrawable = null;
@@ -92,7 +95,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
         unknowMachaineIv = (ImageView) findViewById(R.id.all_sm_back);
         loadFailIv = (ImageView) findViewById(R.id.all_sm_load_fail);
         loadTv = (TextView) findViewById(R.id.all_sm_load_tv);
-        refreshIv = (ImageView) findViewById(R.id.all_sm_refresh);
+        searchIv = (ImageView) findViewById(R.id.all_sm_search);
         addressTv = (TextView) findViewById(R.id.all_sm_address);
         FragmentManager manager = getSupportFragmentManager();
         mMapFragment = (SupportMapFragment) manager.findFragmentById(R.id.all_sm_map_view);
@@ -114,7 +117,7 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
     @Override
     public void setListener() {
         loadLL.setOnClickListener(this);
-        refreshIv.setOnClickListener(this);
+        searchIv.setOnClickListener(this);
         unknowMachaineIv.setOnClickListener(this);
     }
 
@@ -140,10 +143,55 @@ public class AllSlotMachineMapActivity extends BaseActivity implements View.OnCl
                 }
                 onMapReady(mGoogleMap);
                 break;
+            case R.id.all_sm_search:
+                searchMachina();
+                break;
             case R.id.all_sm_back:
                 finish();
                 break;
         }
+    }
+
+    private void searchMachina() {
+        // 创建对话框构建器
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // 获取布局
+        View view2 = View.inflate(AllSlotMachineMapActivity.this, R.layout.dialog_search_machine, null);
+        // 获取布局中的控件
+        final EditText machine_no_et = (EditText) view2.findViewById(R.id.machine_no_et);
+        final Button button = (Button) view2.findViewById(R.id.search_machine_no_btn);
+        // 设置参数
+        builder.setTitle("Login").setView(view2);
+        // 创建对话框
+        final AlertDialog alertDialog = builder.create();
+        button.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                String machineNo = String.valueOf(machine_no_et.getText());
+                if (!machineNo.equals("")) {
+                    AllSMModel.DataBeanX.DataBean dataBean = null;
+                    for (int i = 0; i < smModel.getData().getData().size(); i++) {
+                        if (machineNo.equals(smModel.getData().getData().get(i).getMachineNo())) {
+                            dataBean = smModel.getData().getData().get(i);
+                        }
+                    }
+
+                    if (dataBean == null) {
+                        Toast.makeText(AllSlotMachineMapActivity.this, "未找到此咪錶", Toast.LENGTH_LONG).show();
+                    } else {
+                        latLng = new LatLng(dataBean.getLatitude(), dataBean.getLongitude());
+                        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18F));
+                    }
+                } else {
+                    Toast.makeText(AllSlotMachineMapActivity.this, "請輸入正確的咪錶編號", Toast.LENGTH_LONG).show();
+                }
+                alertDialog.dismiss();// 对话框消失
+            }
+
+        });
+        alertDialog.show();
     }
 
     @Override
