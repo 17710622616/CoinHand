@@ -128,7 +128,8 @@
         android:layout_marginTop="5dp"
         android:text="所有咪錶地圖"
         android:textSize="18sp"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:visibility="gone"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"

@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import com.bssf.john_li.coinhand.R;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -374,7 +376,7 @@ public class CHCommonUtils {
     public static String stampToDate(String s) {
         String res;
         try {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
             long lt = new Long(s);
             Date date = new Date(lt);
             res = simpleDateFormat.format(date);
@@ -697,5 +699,42 @@ public class CHCommonUtils {
     public static int px2dip(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 获取googlemap路线的url
+     * @param origin
+     * @param dest
+     * @return
+     */
+    public static String getDirectionsUrl(Context context, LatLng origin, LatLng dest) {
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + ","
+                + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        // Travelling Mode
+        String mode = "mode=transit";
+
+        //waypoints,116.32885,40.036675
+        String waypointLatLng = "waypoints=" + "40.036675" + "," + "116.32885";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&"
+                + mode + "&key=" + context.getString(R.string.google_maps_key);
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/"
+                + output + "?" + parameters;
+        System.out.println("getDerectionsURL--->: " + url);
+        return url;
     }
 }

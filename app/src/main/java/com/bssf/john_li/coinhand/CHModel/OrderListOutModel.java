@@ -75,6 +75,7 @@ public class OrderListOutModel {
              * orderType : 3
              * machineNo : 86755
              * carId : 30
+             *"carNO": "M1234",
              * startSlotTime : 1526875585000
              * totalAmount : 61
              * discountAmount : 0
@@ -110,6 +111,7 @@ public class OrderListOutModel {
             private int orderType;
             private String machineNo;
             private int carId;
+            private String carNO;
             private long startSlotTime;
             private int totalAmount;
             private int discountAmount;
@@ -191,6 +193,14 @@ public class OrderListOutModel {
 
             public void setCarId(int carId) {
                 this.carId = carId;
+            }
+
+            public String getCarNO() {
+                return carNO;
+            }
+
+            public void setCarNO(String carNO) {
+                this.carNO = carNO;
             }
 
             public long getStartSlotTime() {

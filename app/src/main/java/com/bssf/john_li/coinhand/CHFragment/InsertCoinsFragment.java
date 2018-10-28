@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -30,12 +31,15 @@ import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.CHAdapter.PopOrderListAdapter;
 import com.bssf.john_li.coinhand.CHAdapter.PopUnKnowOrderListAdapter;
+import com.bssf.john_li.coinhand.CHModel.CheckUnfinishModel;
 import com.bssf.john_li.coinhand.CHModel.GetWorkAreaOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderDetialOutModel;
 import com.bssf.john_li.coinhand.CHModel.OrderListOutModel;
 import com.bssf.john_li.coinhand.CHUtils.CHCommonUtils;
 import com.bssf.john_li.coinhand.CHUtils.CHConfigtor;
+import com.bssf.john_li.coinhand.CHUtils.DirectionsJSONParser;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
+import com.bssf.john_li.coinhand.CHUtils.ValComparator;
 import com.bssf.john_li.coinhand.OrderDetialActivity;
 import com.bssf.john_li.coinhand.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -53,7 +57,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,7 +71,10 @@ import org.xutils.http.HttpMethod;
 import org.xutils.http.RequestParams;
 import org.xutils.x;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -103,6 +113,68 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private int totalCount = 0;
 
     private static final int REQUESTCODE = 6001;
+    // 路线
+    private String mapurl;
+
+    private Polyline polylineFinal;
+    PolylineOptions lineOptions = null;
+
+    Handler mHandler2 = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            String s1 = (String) msg.obj;
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(s1);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+
+                // Starts parsing data
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            ArrayList<LatLng> points = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            // Traversing through all the routes
+            for (int i = 0; i < routes.size(); i++) {
+                points = new ArrayList<LatLng>();
+                lineOptions = new PolylineOptions();
+
+                // Fetching i-th route
+                List<HashMap<String, String>> path = routes.get(i);
+
+                // Fetching all the points in i-th route
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                // Adding all the points in the route to LineOptions
+                lineOptions.addAll(points);
+                lineOptions.width(10);
+
+                // Changing the color polyline according to the mode
+                lineOptions.color(getResources().getColor(R.color.base_color));
+            }
+
+            // Drawing polyline in the Google Map for the i-th route
+            if (lineOptions != null) {
+                if (polylineFinal != null) {
+                    polylineFinal.remove();
+                }
+                polylineFinal = mGoogleMap.addPolyline(lineOptions);
+            }
+        }
+    };
 
     public static InsertCoinsFragment newInstance(){
         return new InsertCoinsFragment();
@@ -141,7 +213,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     }
 
     private void setListener() {
-        loadLL.setOnClickListener(this);
+        loadLL.setOnClickListener(null);
         refreshIv.setOnClickListener(this);
         unknowMachaineIv.setOnClickListener(this);
     }
@@ -151,6 +223,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         animationDrawable = (AnimationDrawable) loadIv.getBackground();
         animationDrawable.start();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        orderList = new ArrayList<>();
+        orderMachineUnknowList = new ArrayList<>();
+        orderMaachineKnownList = new ArrayList<>();
     }
 
     @Override
@@ -216,6 +291,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
+                    getGoogleMapLine((String)marker.getTag());
                     showOrderListPop((String)marker.getTag());
                     return false;
                 }
@@ -284,6 +360,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
 
     private void loadMapFail() {
         loadLL.setVisibility(View.VISIBLE);
+        loadLL.setOnClickListener(this);
         //loadIv.setImageResource(R.mipmap.head_boy);
         loadIv.setVisibility(View.GONE);
         animationDrawable.stop();
@@ -348,6 +425,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 18));
                     loadLL.setVisibility(View.GONE);
+                    loadLL.setOnClickListener(null);
                     addressTv.setText(address);
                     // 刷新訂單列表
                     refreshOrderList();
@@ -408,7 +486,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      */
     private void refreshOrderList() {
         if (mGoogleMap != null) {
-            // 模擬加數據
             loadOrderList();
         } else {
             Toast.makeText(getActivity(), "定位信息有誤，請重新定位！", Toast.LENGTH_SHORT);
@@ -419,15 +496,13 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
      * 請求訂單列表
      */
     private void loadOrderList() {
-        Log.d("MAPLOGS", "InsertloadOrderList");
-        orderList = new ArrayList<>();
-        orderMachineUnknowList = new ArrayList<>();
-        orderMaachineKnownList = new ArrayList<>();
         final ProgressDialog dialog = new ProgressDialog(getActivity());
         dialog.setTitle("系統");
         dialog.setMessage("正在獲取最新訂單列表中......");
         dialog.setCancelable(false);
         dialog.show();
+        orderMachineUnknowList.clear();
+        orderMaachineKnownList.clear();
         RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.GET_ORDER_LIST);
         params.setAsJsonContent(true);
         JSONObject jsonObj = new JSONObject();
@@ -478,6 +553,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
     private void refreshNewMarkerList() {
         // 清空之前的marker
         mGoogleMap.clear();
+        List<OrderListOutModel.DataBean> orderUrgencyList = new ArrayList<>();
         // 添加新的marker集合到界面
         for (int i = 0; i < orderList.size(); i++) {
             if (CHCommonUtils.isToday(orderList.get(i).getOrder().getStartSlotTime())) {    // 判断时候是今天的订单，不是今天的订单不处理
@@ -514,8 +590,69 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 }
             }
         }
+
+        // 按时间的快慢排序list
+        Collections.sort(orderMaachineKnownList, new ValComparator());
         latLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+
+        // 增加路线
+        if (orderMaachineKnownList.size() > 0) {
+            // 拼接googlemap路线请求地址
+            mapurl = CHCommonUtils.getDirectionsUrl(getActivity(), latLng, new LatLng(orderMaachineKnownList.get(0).getSoltMachine().getLatitude(), orderMaachineKnownList.get(0).getSoltMachine().getLongitude()));
+            // 請求獲取路線
+            request();
+        }
+
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16F));
+        // 加载完成地图及图钉检查是否有未完成订单
+        checkHasUnfinishOrder();
+    }
+
+    private void request() {
+        RequestParams params = new RequestParams(mapurl);
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                String s1 = result.toString();
+                Message message = new Message();
+                message.obj = s1;
+                mHandler2.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(getApplicationContext(), "路線獲取失敗！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+    }
+
+    /**
+     * 获取路线
+     * @param tag
+     */
+    private void getGoogleMapLine(String tag) {
+        double latitude = 0.0;
+        double longitude = 0.0;
+        for (int i = 0; i < orderMaachineKnownList.size(); i++) {
+            if (orderMaachineKnownList.get(i).getSoltMachine().getMachineNo().equals(tag)) {
+                latitude = orderMaachineKnownList.get(i).getSoltMachine().getLatitude();
+                longitude = orderMaachineKnownList.get(i).getSoltMachine().getLongitude();
+                break;
+            }
+        }
+        mapurl = CHCommonUtils.getDirectionsUrl(getActivity(), latLng, new LatLng(latitude, longitude));
+        // 請求獲取路線
+        request();
     }
 
     /**
@@ -527,6 +664,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_order_list, null);
         final PopupWindow mPopWindow = new PopupWindow(contentView, LinearLayout.LayoutParams.MATCH_PARENT, 1000, true);
         mPopWindow.setContentView(contentView);
+        mPopWindow.setFocusable(false);
+        mPopWindow.setOutsideTouchable(false);
         //设置各个控件的点击响应
         TextView machineTv = contentView.findViewById(R.id.pop_macheine_address);
         ImageView cancleIv = contentView.findViewById(R.id.pop_cancle);
@@ -546,7 +685,8 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderThatMacheineList.get(position).getOrder().getOrderNo());
-                intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
+                intent.putExtra("isReciverOrder", "false");
+                //intent.putExtra("address", orderThatMacheineList.get(position).getSoltMachine().getAddress());
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -582,6 +722,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
                 intent.putExtra("orderNo", orderMachineUnknowList.get(position).getOrder().getOrderNo());
+                intent.putExtra("isReciverOrder", "false");
                 startActivity(intent);
                 mPopWindow.dismiss();
             }
@@ -605,6 +746,63 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             }
         }
         return list;
+    }
+
+    /**
+     * 檢查是否有未完成的訂單
+     */
+    private void checkHasUnfinishOrder() {
+        final ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setTitle("系統");
+        dialog.setMessage("檢測是否有接嘅單......");
+        dialog.setCancelable(false);
+        dialog.show();
+        RequestParams params = new RequestParams(CHConfigtor.BASE_URL + CHConfigtor.CHECK_UNFINISH);
+        params.setAsJsonContent(true);
+        JSONObject jsonObj = new JSONObject();
+        try {
+            jsonObj.put("qstoken",SPUtils.get(getActivity(), "qsUserToken", ""));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String urlJson = jsonObj.toString();
+        params.setBodyContent(urlJson);
+        String uri = params.getUri();
+        params.setConnectTimeout(30 * 1000);
+        x.http().request(HttpMethod.POST ,params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                CheckUnfinishModel model = new Gson().fromJson(result.toString(), CheckUnfinishModel.class);
+                if (model.getCode() == 200) {
+                    Toast.makeText(getActivity(), "您暫無未完成訂單！", Toast.LENGTH_SHORT).show();
+                } else if (model.getCode() == 70008){
+                    Intent intent = new Intent(getActivity(), OrderDetialActivity.class);
+                    intent.putExtra("orderNo", model.getData().getOrderNo());
+                    intent.putExtra("isReciverOrder", "true");
+                    startActivity(intent);
+                    Toast.makeText(getActivity(), "您有未完成訂單！請完成先", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取未完成訂單失敗！請重新提交" + String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
+                }
+            }
+            //请求异常后的回调方法
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                if (ex instanceof java.net.SocketTimeoutException) {
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), "獲取投幣手工作區域失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //主动调用取消请求的回调方法
+            @Override
+            public void onCancelled(CancelledException cex) {
+            }
+            @Override
+            public void onFinished() {
+                dialog.dismiss();
+            }
+        });
     }
 
     @Subscribe

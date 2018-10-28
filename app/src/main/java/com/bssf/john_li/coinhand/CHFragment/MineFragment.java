@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bssf.john_li.coinhand.AllSlotMachineMapActivity;
 import com.bssf.john_li.coinhand.CHUtils.SPUtils;
@@ -60,7 +61,12 @@ public class MineFragment extends LazyLoadFragment implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int which) {
                                 SPUtils.put(getActivity(), "qsUserToken", "");
                                 dialog.dismiss();
-                                System.exit(0);
+                                String qsUserToken = (String) SPUtils.get(getActivity(), "qsUserToken", "");
+                                if (qsUserToken.equals("")) {
+                                    System.exit(0);
+                                } else {
+                                    Toast.makeText(getActivity(), "登出失敗！", Toast.LENGTH_SHORT).show();
+                                }
                             }})
                         .setNegativeButton("取消", null)
                         .create().show();

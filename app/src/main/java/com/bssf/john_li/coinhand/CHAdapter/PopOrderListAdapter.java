@@ -54,36 +54,41 @@ public class PopOrderListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_pop_order_list, null);
             holder = new ViewHolder();
-            holder.item_pop_iv = convertView.findViewById(R.id.item_pop_iv);
             holder.item_pop_order_no = convertView.findViewById(R.id.item_pop_order_no);
             holder.item_pop_car_no = convertView.findViewById(R.id.item_pop_car_no);
             holder.item_pop_car_port = convertView.findViewById(R.id.item_pop_car_port);
             holder.item_pop_order_next_time = convertView.findViewById(R.id.item_pop_order_next_time);
             holder.item_pop_order_remark = convertView.findViewById(R.id.item_pop_order_remark);
+            holder.item_pop_order_next_time_text = convertView.findViewById(R.id.item_pop_order_next_time_text);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //x.image().bind(holder.item_pop_iv,  String.valueOf(list.get(position).getOrder().getOrderNo()), options);
         holder.item_pop_order_no.setText("編號：" + String.valueOf(list.get(position).getOrder().getOrderNo()));
-        holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarId()));
-        holder.item_pop_car_port.setText("車位編號：" + String.valueOf(list.get(position).getSoltMachine().getMachineNo()) + list.get(position).getOrder().getParkingSpace());
-        holder.item_pop_order_next_time.setText("下次時間：" + CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));
-        holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getOrder().getRemark()));
+        holder.item_pop_car_no.setText("車牌號碼：" + String.valueOf(list.get(position).getOrder().getCarNO()));
+        holder.item_pop_car_port.setText("咪錶號碼：" + String.valueOf(list.get(position).getSoltMachine().getMachineNo()) + "車位：" + list.get(position).getOrder().getParkingSpace());
+        holder.item_pop_order_next_time.setText(CHCommonUtils.stampToDate(String.valueOf(list.get(position).getOrder().getStartSlotTime())));
+        if (list.get(position).getOrder().getRemark() == null) {
+            holder.item_pop_order_remark.setText("备注：無");
+        } else {
+            holder.item_pop_order_remark.setText("备注：" + String.valueOf(list.get(position).getOrder().getRemark()));
+        }
 
         long timeDiff = CHCommonUtils.compareTimestamps(list.get(position).getOrder().getStartSlotTime());
         if (timeDiff > -30) {
+            holder.item_pop_order_next_time_text.setTextColor(Color.rgb(255,0,0));
             holder.item_pop_order_next_time.setTextColor(Color.rgb(255,0,0));
         } else if (timeDiff > -60){
-            holder.item_pop_order_next_time.setTextColor(Color.rgb(255,153,0));
+            holder.item_pop_order_next_time_text.setTextColor(Color.rgb(255,110,0));
+            holder.item_pop_order_next_time.setTextColor(Color.rgb(255,110,0));
         } else {
-            holder.item_pop_order_next_time.setTextColor(Color.rgb(17,238,61));
+            holder.item_pop_order_next_time_text.setTextColor(Color.rgb(60,179,113));
+            holder.item_pop_order_next_time.setTextColor(Color.rgb(60,179,113));
         }
         return convertView;
     }
 
     public class ViewHolder {
-        public ImageView item_pop_iv;
-        public TextView item_pop_order_no, item_pop_car_no, item_pop_car_port, item_pop_order_next_time, item_pop_order_remark;
+        public TextView item_pop_order_no, item_pop_car_no, item_pop_car_port, item_pop_order_next_time, item_pop_order_next_time_text, item_pop_order_remark;
     }
 }
