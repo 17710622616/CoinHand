@@ -42,8 +42,14 @@ import org.xutils.http.RequestParams;
 import org.xutils.x;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 /**
  * Created by John_Li on 20/1/2018.
@@ -91,7 +97,27 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         cacheFragment = new InsertCoinsFragment();
         traslation.add(R.id.main_containor,cacheFragment,InsertCoinsFragment.TAG);
         traslation.commit();
+
+        // 註冊極光別名
+        String alias = "xiaoma66";
+        //给极光推送设置标签和别名
+        JPushInterface.setAlias(this, alias, tagAliasCallback);
     }
+
+    //极光服务器设置别名是否成功的回调
+    private final TagAliasCallback tagAliasCallback = new TagAliasCallback() {
+        @Override
+        public void gotResult(int code, String alias, Set<String> tagSet) {
+            switch (code) {
+                case 0:
+                    Toast.makeText(MainActivity.this, "设置别名成功", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(MainActivity.this, "设置别名失败", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
 
     /**
      * 检查运行时权限
