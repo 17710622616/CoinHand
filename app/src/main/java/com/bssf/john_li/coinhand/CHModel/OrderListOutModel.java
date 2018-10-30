@@ -113,9 +113,9 @@ public class OrderListOutModel {
             private int carId;
             private String carNO;
             private long startSlotTime;
-            private int totalAmount;
-            private int discountAmount;
-            private int payAmount;
+            private double totalAmount;
+            private double discountAmount;
+            private double payAmount;
             private String couponId;
             private String remark;
             private int monthNum;
@@ -136,8 +136,35 @@ public class OrderListOutModel {
             private String img3;
             private String img4;
             private String img5;
-            private int toushouAmount;
+            private double toushouAmount;
             private long toushouUserId;
+            private String currency;
+            private String exchange;
+            private double exchangeAmountPay;
+
+            public String getCurrency() {
+                return currency;
+            }
+
+            public void setCurrency(String currency) {
+                this.currency = currency;
+            }
+
+            public String getExchange() {
+                return exchange;
+            }
+
+            public void setExchange(String exchange) {
+                this.exchange = exchange;
+            }
+
+            public double getExchangeAmountPay() {
+                return exchangeAmountPay;
+            }
+
+            public void setExchangeAmountPay(double exchangeAmountPay) {
+                this.exchangeAmountPay = exchangeAmountPay;
+            }
 
             public int getId() {
                 return id;
@@ -211,27 +238,27 @@ public class OrderListOutModel {
                 this.startSlotTime = startSlotTime;
             }
 
-            public int getTotalAmount() {
+            public double getTotalAmount() {
                 return totalAmount;
             }
 
-            public void setTotalAmount(int totalAmount) {
+            public void setTotalAmount(double totalAmount) {
                 this.totalAmount = totalAmount;
             }
 
-            public int getDiscountAmount() {
+            public double getDiscountAmount() {
                 return discountAmount;
             }
 
-            public void setDiscountAmount(int discountAmount) {
+            public void setDiscountAmount(double discountAmount) {
                 this.discountAmount = discountAmount;
             }
 
-            public int getPayAmount() {
+            public double getPayAmount() {
                 return payAmount;
             }
 
-            public void setPayAmount(int payAmount) {
+            public void setPayAmount(double payAmount) {
                 this.payAmount = payAmount;
             }
 
@@ -395,11 +422,11 @@ public class OrderListOutModel {
                 this.img5 = img5;
             }
 
-            public int getToushouAmount() {
+            public double getToushouAmount() {
                 return toushouAmount;
             }
 
-            public void setToushouAmount(int toushouAmount) {
+            public void setToushouAmount(double toushouAmount) {
                 this.toushouAmount = toushouAmount;
             }
 

@@ -8,7 +8,6 @@
         android:id="@+id/dialog_order_amount_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:hint="請填寫投幣金額" />
     <Button
         android:id="@+id/dialog_order_amount_submit"

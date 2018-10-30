@@ -52,7 +52,7 @@ public class OrderDetialOutModel {
          */
 
         private OrderBean order;
-        private int currentToubiAmount;
+        private double currentToubiAmount;
         private SoltMachineBean soltMachine;
         private CarBean car;
         private List<ToushouRecordListBean> toushouRecordList;
@@ -65,11 +65,11 @@ public class OrderDetialOutModel {
             this.order = order;
         }
 
-        public int getCurrentToubiAmount() {
+        public double getCurrentToubiAmount() {
             return currentToubiAmount;
         }
 
-        public void setCurrentToubiAmount(int currentToubiAmount) {
+        public void setCurrentToubiAmount(double currentToubiAmount) {
             this.currentToubiAmount = currentToubiAmount;
         }
 
@@ -142,9 +142,9 @@ public class OrderDetialOutModel {
             private String machineNo;
             private int carId;
             private long startSlotTime;
-            private int totalAmount;
-            private int discountAmount;
-            private int payAmount;
+            private double totalAmount;
+            private double discountAmount;
+            private double payAmount;
             private int couponId;
             private String remark;
             private int monthNum;
@@ -165,7 +165,7 @@ public class OrderDetialOutModel {
             private String img3;
             private String img4;
             private String img5;
-            private int toushouAmount;
+            private double toushouAmount;
             private int toushouUserId;
 
             public int getId() {
@@ -232,27 +232,27 @@ public class OrderDetialOutModel {
                 this.startSlotTime = startSlotTime;
             }
 
-            public int getTotalAmount() {
+            public double getTotalAmount() {
                 return totalAmount;
             }
 
-            public void setTotalAmount(int totalAmount) {
+            public void setTotalAmount(double totalAmount) {
                 this.totalAmount = totalAmount;
             }
 
-            public int getDiscountAmount() {
+            public double getDiscountAmount() {
                 return discountAmount;
             }
 
-            public void setDiscountAmount(int discountAmount) {
+            public void setDiscountAmount(double discountAmount) {
                 this.discountAmount = discountAmount;
             }
 
-            public int getPayAmount() {
+            public double getPayAmount() {
                 return payAmount;
             }
 
-            public void setPayAmount(int payAmount) {
+            public void setPayAmount(double payAmount) {
                 this.payAmount = payAmount;
             }
 
@@ -416,11 +416,11 @@ public class OrderDetialOutModel {
                 this.img5 = img5;
             }
 
-            public int getToushouAmount() {
+            public double getToushouAmount() {
                 return toushouAmount;
             }
 
-            public void setToushouAmount(int toushouAmount) {
+            public void setToushouAmount(double toushouAmount) {
                 this.toushouAmount = toushouAmount;
             }
 
@@ -731,7 +731,7 @@ public class OrderDetialOutModel {
             private String orderNo;
             private int userId;
             private String username;
-            private int amount;
+            private double amount;
             private int status;
             private long createTime;
             private long finishTime;
@@ -768,11 +768,11 @@ public class OrderDetialOutModel {
                 this.username = username;
             }
 
-            public int getAmount() {
+            public double getAmount() {
                 return amount;
             }
 
-            public void setAmount(int amount) {
+            public void setAmount(double amount) {
                 this.amount = amount;
             }
 

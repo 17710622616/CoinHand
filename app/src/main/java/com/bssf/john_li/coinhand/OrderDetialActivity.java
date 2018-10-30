@@ -105,7 +105,7 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
     private OrderDetialOutModel.DataBean.OrderBean mOrderDetialModel;
     private OrderDetialOutModel.DataBean.SoltMachineBean mSoltMachineBean;
     private OrderDetialOutModel.DataBean.CarBean mCarBean;
-    private int currentToubiAmount;
+    private double currentToubiAmount;
     private List<OrderDetialOutModel.DataBean.ToushouRecordListBean> mToushouRecordList;
     private OrderOperationRecordAdapter mOrderOperationRecordAdapter;
     private List<String> mPhotoList;

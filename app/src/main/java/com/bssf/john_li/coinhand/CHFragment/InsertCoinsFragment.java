@@ -226,7 +226,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         orderList = new ArrayList<>();
         orderMachineUnknowList = new ArrayList<>();
         orderMaachineKnownList = new ArrayList<>();
-        loadOrderList();
     }
 
     @Override
