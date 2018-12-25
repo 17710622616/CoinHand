@@ -226,7 +226,6 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
         orderList = new ArrayList<>();
         orderMachineUnknowList = new ArrayList<>();
         orderMaachineKnownList = new ArrayList<>();
-        //loadOrderList();
     }
 
     @Override
@@ -534,7 +533,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                 if (ex instanceof java.net.SocketTimeoutException) {
                     Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試" + ex.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試", Toast.LENGTH_SHORT).show();
                 }
             }
             //主动调用取消请求的回调方法
