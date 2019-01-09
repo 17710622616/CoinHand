@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, JPush!</string>
+    <string name="hello">CoinHand</string>
     <string name="app_name">CoinHand</string>
     <string name="title_activity_maps">Map</string>
     <string name="tag_hint">Tag can be number, alphabet, underscore, Chinese. Use , to split many tags.</string>

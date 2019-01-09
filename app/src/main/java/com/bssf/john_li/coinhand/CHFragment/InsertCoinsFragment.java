@@ -291,7 +291,7 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
-                    getGoogleMapLine((String)marker.getTag());
+                    //getGoogleMapLine((String)marker.getTag());
                     showOrderListPop((String)marker.getTag());
                     return false;
                 }
