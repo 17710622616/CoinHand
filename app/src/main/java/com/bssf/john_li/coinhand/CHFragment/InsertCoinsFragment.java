@@ -524,16 +524,16 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
                     refreshNewMarkerList();
                     Toast.makeText(getActivity(), "獲取最新訂單列表成功！", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試"+ String.valueOf(model.getMsg()), Toast.LENGTH_SHORT).show();
                 }
             }
             //请求异常后的回调方法
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 if (ex instanceof java.net.SocketTimeoutException) {
-                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "獲取最新訂單列表失敗！請重新試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 }
             }
             //主动调用取消请求的回调方法
@@ -789,9 +789,9 @@ public class InsertCoinsFragment extends LazyLoadFragment implements View.OnClic
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 if (ex instanceof java.net.SocketTimeoutException) {
-                    Toast.makeText(getActivity(), "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "網絡連接超時，請重試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity(), "獲取投幣手工作區域失敗！請重新提交", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "獲取投幣手工作區域失敗！請重新提交" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 }
             }
             //主动调用取消请求的回调方法

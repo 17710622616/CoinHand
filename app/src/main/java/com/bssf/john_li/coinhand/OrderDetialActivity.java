@@ -231,10 +231,10 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 if (ex instanceof java.net.SocketTimeoutException) {
-                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                     orderDetialLoadFail();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "獲取訂單詳情失敗！請重新試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                     orderDetialLoadFail();
                 }
             }
@@ -375,9 +375,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 if (ex instanceof java.net.SocketTimeoutException) {
-                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "接單失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "接單失敗！請重新試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 }
             }
             //主动调用取消请求的回调方法
@@ -462,9 +462,9 @@ public class OrderDetialActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onError(Throwable ex, boolean isOnCallback) {
                 if (ex instanceof java.net.SocketTimeoutException) {
-                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "網絡連接超時，請重試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！請重新試", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderDetialActivity.this, "本階段投幣失敗！請重新試" + String.valueOf(ex.getStackTrace()), Toast.LENGTH_SHORT).show();
                 }
             }
             //主动调用取消请求的回调方法
